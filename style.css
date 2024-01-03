@@ -10,3 +10,18 @@ button {
     background-color: orange !important;
     border-color: orange !important;
 }
+
+.line {
+    background-color: orange;
+    width: 300px;
+    height: 3px;
+}
+
+table {
+    border-radius: 5%;
+}
+
+th {
+    background-color: orange !important;
+    color: white !important;
+}

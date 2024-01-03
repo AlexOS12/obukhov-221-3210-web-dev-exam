@@ -50,6 +50,202 @@
         </nav>
     </header>
 
+    <main>
+        <div class="messageBox">
+            <!-- Здесь будут выводиться соообщения -->
+        </div>
+
+        <!-- Блок картика-слоган -->
+        <section class="row p-3">
+            <div class="col-lg-6 p-3">
+                <img src="images/blank.png" alt="blank" width="100%">
+            </div>
+            <div class="col-lg-6 p-3">
+                <p>
+                    Здесь в последствии будет какой-то слоган
+                </p>
+            </div>
+        </section>
+        <!-- Блок с описание преимуществ компании -->
+        <div>
+            <h2 class="text-center mb-3">Наши преимущества</h2>
+            <div class="line mx-auto my-3"></div>
+        </div>
+        <section class="row p-3 justify-content-center">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
+                <p class="text-center">Преимущество 1</p>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
+                <p class="text-center">Преимущество 2</p>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
+                <p class="text-center">Преимущество 3</p>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
+                <p class="text-center">Преимущество 4</p>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
+                <p class="text-center">Преимущество 5</p>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
+                <p class="text-center">Преимущество 6</p>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
+                <p class="text-center">Преимущество 7</p>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
+                <p class="text-center">Преимущество 8</p>
+            </div>
+        </section>
+
+        <!-- Блок списка маршрутов -->
+        <section>
+            <div>
+                <h2 class="text-center mb-3">Список маршрутов</h2>
+                <div class="line mx-auto my-3"></div>
+            </div>
+            <!-- Поиск по названию  и основному объекту -->
+            <div class="row p-3 d-flex justify-content-around">
+                <!-- Поиск по названию -->
+                <input name="routeName" type="text" class="d-block col-md-4 col-sm-12" placeholder="Введите название маршрута">
+                <!-- Выпадающий список объектов -->
+                <select name="mainObject" class="d-block col-md-4 col-sm-12">
+                    <option value="opt1">Объект 1</option>
+                    <option value="opt2">Объект 2</option>
+                    <option value="opt3">Объект 3</option>
+                    <option value="opt4">Объект 4</option>
+                </select>
+            </div>
+            <!-- Таблица машрутов -->
+            <div class="py-3 px-5">
+                <table class="table text-center">
+                    <thead class="align-middle">
+                        <tr>
+                            <th>Название</th>
+                            <th>Описание</th>
+                            <th>Основные объекты</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                        <tr>
+                            <td>Маршрут 1</td>
+                            <td>Описание 1</td>
+                            <td>Объект 1</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Маршрут 2</td>
+                            <td>Описание 2</td>
+                            <td>Объект 2</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Маршрут 3</td>
+                            <td>Описание 3</td>
+                            <td>Объект 3</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Маршрут 4</td>
+                            <td>Описание 4</td>
+                            <td>Объект 4</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <!-- Блок выбора гида -->
+        <section>
+            <h2 class="text-center mb-3">Выбор гида</h2>
+            <div class="line mx-auto my-3"></div>
+            <div class="py-3 px-5">
+                <table class="table text-center">
+                    <thead class="align-middle">
+                        <tr>
+                            <th>ФИО</th>
+                            <th>Языки</th>
+                            <th>Опыт работы</th>
+                            <th>Стоимость за час</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                        <tr>
+                            <td>ФИО 1</td>
+                            <td>Языки 1</td>
+                            <td>Опыт работы 1</td>
+                            <td>Стоимость 1</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ФИО 2</td>
+                            <td>Языки 2</td>
+                            <td>Опыт работы 2</td>
+                            <td>Стоимость 2</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ФИО 3</td>
+                            <td>Языки 3</td>
+                            <td>Опыт работы 3</td>
+                            <td>Стоимость 3</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ФИО 4</td>
+                            <td>Языки 4</td>
+                            <td>Опыт работы 4</td>
+                            <td>Стоимость 4</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    Выбрать
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
