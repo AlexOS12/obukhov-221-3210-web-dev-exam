@@ -56,7 +56,7 @@
         </div>
 
         <!-- Блок картика-слоган -->
-        <section class="row p-3">
+        <section class="container-fluid row p-3">
             <div class="col-lg-6 p-3">
                 <img src="images/blank.png" alt="blank" width="100%">
             </div>
@@ -67,11 +67,11 @@
             </div>
         </section>
         <!-- Блок с описание преимуществ компании -->
-        <div>
-            <h2 class="text-center mb-3">Наши преимущества</h2>
-            <div class="line mx-auto my-3"></div>
-        </div>
-        <section class="row p-3 justify-content-center">
+        <section class="container-fluid row p-3 justify-content-center">
+            <div>
+                <h2 class="text-center mb-3">Наши преимущества</h2>
+                <div class="line mx-auto my-3"></div>
+            </div>
             <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
                 <img class="mx-auto d-block" src="images/blank.png" alt="blank" height="200px">
                 <p class="text-center">Преимущество 1</p>
@@ -107,17 +107,18 @@
         </section>
 
         <!-- Блок списка маршрутов -->
-        <section>
+        <section class="container-fluid">
             <div>
                 <h2 class="text-center mb-3">Список маршрутов</h2>
                 <div class="line mx-auto my-3"></div>
             </div>
             <!-- Поиск по названию  и основному объекту -->
-            <div class="row p-3 d-flex justify-content-around">
+            <div class="row p-3 d-flex justify-content-evenly">
                 <!-- Поиск по названию -->
-                <input name="routeName" type="text" class="d-block col-md-4 col-sm-12" placeholder="Введите название маршрута">
+                <input name="routeName" type="text" class="d-block col-md-4 col-sm-12 mb-3 mb-md-0"
+                    placeholder="Введите название маршрута">
                 <!-- Выпадающий список объектов -->
-                <select name="mainObject" class="d-block col-md-4 col-sm-12">
+                <select id="mainObject" name="mainObject" class="d-block col-md-4 col-sm-12">
                     <option value="opt1">Объект 1</option>
                     <option value="opt2">Объект 2</option>
                     <option value="opt3">Объект 3</option>
@@ -181,9 +182,38 @@
             </div>
         </section>
         <!-- Блок выбора гида -->
-        <section>
+        <section class="container-fluid">
             <h2 class="text-center mb-3">Выбор гида</h2>
             <div class="line mx-auto my-3"></div>
+
+            <!-- Выбор по опыту и языку -->
+            <div class="row p-3 d-flex justify-content-evenly">
+                <!-- Выбор языка -->
+                <div class="d-block col-md-4 mb-3 mb-md-0 form-floating">
+                    <select id="langSelect" class="form-select form-select-sm">
+                        <option value="1">Язык 1</option>
+                        <option value="2">Язык 2</option>
+                        <option value="3">Язык 3</option>
+                        <option value="4">Язык 4</option>
+                    </select>
+                    <label for="langSelect">Язык экскурсии</label>
+                </div>
+                <!-- Выбор опыта работы -->
+                <div class="d-block col-md-4">
+                    <div class="row d-flex">
+                        <p class="col-md-4 mb-3 my-md-auto text-md-end">Опыт:</p>
+                        <div class="col-md-4 mb-3 mb-md-0 form-floating">
+                            <input class="form-control" type="number" id="expFrom" value="0">
+                            <label for="expFrom">от</label>
+                        </div>
+                        <div class="col-md-4 form-floating">
+                            <input class="form-control" type="number" id="expTo" value="10">
+                            <label for="expTo">до</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="py-3 px-lg-5 px-3">
                 <table class="table text-center">
                     <thead class="align-middle">
