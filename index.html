@@ -56,7 +56,7 @@
         </div>
 
         <!-- Блок картика-слоган -->
-        <section class="container-fluid row p-3">
+        <section class="container-fluid row p-3 mx-auto">
             <div class="col-lg-6 p-3">
                 <img src="images/blank.png" alt="blank" width="100%">
             </div>
@@ -67,7 +67,7 @@
             </div>
         </section>
         <!-- Блок с описание преимуществ компании -->
-        <section class="container-fluid row p-3 justify-content-center">
+        <section class="container-fluid row p-3 justify-content-center mx-auto">
             <div>
                 <h2 class="text-center mb-3">Наши преимущества</h2>
                 <div class="line mx-auto my-3"></div>
@@ -107,7 +107,7 @@
         </section>
 
         <!-- Блок списка маршрутов -->
-        <section class="container-fluid">
+        <section class="container-fluid p-3 mx-auto">
             <div>
                 <h2 class="text-center mb-3">Список маршрутов</h2>
                 <div class="line mx-auto my-3"></div>
@@ -115,18 +115,23 @@
             <!-- Поиск по названию  и основному объекту -->
             <div class="row p-3 d-flex justify-content-evenly">
                 <!-- Поиск по названию -->
-                <input name="routeName" type="text" class="d-block col-md-4 col-sm-12 mb-3 mb-md-0"
-                    placeholder="Введите название маршрута">
+                <div class="d-block col-md-4 col-sm-12 mb-3 mb-md-0 form-floating">
+                    <input class="form-control" type="text" id="routeName" placeholder="Название маршрута">
+                    <label for="routeName">Название маршрута</label>
+                </div>
                 <!-- Выпадающий список объектов -->
-                <select id="mainObject" name="mainObject" class="d-block col-md-4 col-sm-12">
-                    <option value="opt1">Объект 1</option>
-                    <option value="opt2">Объект 2</option>
-                    <option value="opt3">Объект 3</option>
-                    <option value="opt4">Объект 4</option>
-                </select>
+                <div class="d-block col-md-4 col-sm-12 form-floating">
+                    <select id="mainObject" class="form-select form-select-sm">
+                        <option value="1">Объект 1</option>
+                        <option value="2">Объект 2</option>
+                        <option value="3">Объект 3</option>
+                        <option value="4">Объект 4</option>
+                    </select>
+                    <label for="mainObject">Основной объект</label>
+                </div>
             </div>
             <!-- Таблица машрутов -->
-            <div class="py-3 px-lg-5 px-3">
+            <div class="py-3 px-lg-5 px-1">
                 <table class="table text-center">
                     <thead class="align-middle">
                         <tr>
@@ -142,7 +147,7 @@
                             <td>Описание 1</td>
                             <td>Объект 1</td>
                             <td>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary px-2">
                                     Выбрать
                                 </button>
                             </td>
@@ -152,7 +157,7 @@
                             <td>Описание 2</td>
                             <td>Объект 2</td>
                             <td>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary px-2">
                                     Выбрать
                                 </button>
                             </td>
@@ -162,7 +167,7 @@
                             <td>Описание 3</td>
                             <td>Объект 3</td>
                             <td>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary px-2">
                                     Выбрать
                                 </button>
                             </td>
@@ -172,7 +177,7 @@
                             <td>Описание 4</td>
                             <td>Объект 4</td>
                             <td>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary px-2">
                                     Выбрать
                                 </button>
                             </td>
@@ -182,7 +187,7 @@
             </div>
         </section>
         <!-- Блок выбора гида -->
-        <section class="container-fluid">
+        <section class="container-fluid p-3 mx-auto">
             <h2 class="text-center mb-3">Выбор гида</h2>
             <div class="line mx-auto my-3"></div>
 
@@ -214,58 +219,58 @@
                 </div>
             </div>
 
-            <div class="py-3 px-lg-5 px-3">
+            <div class="py-3 px-lg-5 px-1">
                 <table class="table text-center">
                     <thead class="align-middle">
                         <tr>
                             <th>ФИО</th>
-                            <th>Языки</th>
+                            <th>Язык</th>
                             <th>Опыт работы</th>
-                            <th>Стоимость за час</th>
+                            <th>Цена за час</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody class="align-middle">
                         <tr>
                             <td>ФИО 1</td>
-                            <td>Языки 1</td>
+                            <td>Язык 1</td>
                             <td>Опыт работы 1</td>
                             <td>Стоимость 1</td>
                             <td>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary px-2">
                                     Выбрать
                                 </button>
                             </td>
                         </tr>
                         <tr>
                             <td>ФИО 2</td>
-                            <td>Языки 2</td>
+                            <td>Язык 2</td>
                             <td>Опыт работы 2</td>
                             <td>Стоимость 2</td>
                             <td>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary px-2">
                                     Выбрать
                                 </button>
                             </td>
                         </tr>
                         <tr>
                             <td>ФИО 3</td>
-                            <td>Языки 3</td>
+                            <td>Язык 3</td>
                             <td>Опыт работы 3</td>
                             <td>Стоимость 3</td>
                             <td>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary px-2">
                                     Выбрать
                                 </button>
                             </td>
                         </tr>
                         <tr>
                             <td>ФИО 4</td>
-                            <td>Языки 4</td>
+                            <td>Язык 4</td>
                             <td>Опыт работы 4</td>
                             <td>Стоимость 4</td>
                             <td>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary px-2">
                                     Выбрать
                                 </button>
                             </td>
