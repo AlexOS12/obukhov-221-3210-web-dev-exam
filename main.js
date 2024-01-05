@@ -115,7 +115,7 @@ async function getRoutes() {
         for (let route of json) {
             routes.push(route);
         }
-        maxPage = routes.length / 5
+        maxPage = routes.length / 5;
         if (maxPage % 1 > 0) {
             maxPage = Math.floor(maxPage) + 1;
         } 
@@ -124,8 +124,6 @@ async function getRoutes() {
         alert(res.status);
     }
 };
-
-
 
 window.onload = async function () {
     let accountBtn = document.getElementById("accBtn");
@@ -137,7 +135,7 @@ window.onload = async function () {
     paginationWoker(currentPage);
 
     document.querySelector(".first-page-btn").onclick = function () {
-        paginationWoker(1)
+        paginationWoker(1);
     };
     document.querySelector(".last-page-btn").onclick = function () {
         paginationWoker(maxPage);
