@@ -2,6 +2,10 @@
     margin: auto;
 }
 
+.hidden {
+    display: none;
+}
+
 nav {
     color: olive !important;
 }
@@ -9,6 +13,11 @@ nav {
 button {
     background-color: orange !important;
     border-color: orange !important;
+}
+
+.current-page-button {
+    background-color: white !important;
+    color: orange !important;
 }
 
 .line {

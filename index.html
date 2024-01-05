@@ -122,23 +122,23 @@
                 <!-- Выпадающий список объектов -->
                 <div class="d-block col-md-4 col-sm-12 form-floating">
                     <select id="mainObject" class="form-select form-select-sm">
-                        <option value="1">Объект 1</option>
+                        <!-- <option value="1">Объект 1</option>
                         <option value="2">Объект 2</option>
                         <option value="3">Объект 3</option>
-                        <option value="4">Объект 4</option>
+                        <option value="4">Объект 4</option> -->
                     </select>
                     <label for="mainObject">Основной объект</label>
                 </div>
             </div>
             <!-- Таблица машрутов -->
             <div class="py-3 px-lg-5 px-1">
-                <table class="table text-center">
+                <table class="table text-center" id="routes-table">
                     <thead class="align-middle">
                         <tr>
-                            <th>Название</th>
-                            <th>Описание</th>
-                            <th>Основные объекты</th>
-                            <th></th>
+                            <th width="20%">Название</th>
+                            <th width="35%">Описание</th>
+                            <th width="35%">Основные объекты</th>
+                            <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody class="align-middle">
@@ -161,7 +161,7 @@
                                     Выбрать
                                 </button>
                             </td>
-                        </tr>
+                        </tr>x
                         <tr>
                             <td>Маршрут 3</td>
                             <td>Описание 3</td>
@@ -184,6 +184,13 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="pagination d-flex justify-content-between">
+                    <button type="button" class="btn btn-primary px-2 first-page-btn">Первая страница</button>
+                    <div class="page-btns">
+                        <!-- Здесь будут кнопки страниц -->
+                    </div>
+                    <button type="button" class="btn btn-primary px-2 last-page-btn">Последняя страница</button>
+                </div>
             </div>
         </section>
         <!-- Блок выбора гида -->
