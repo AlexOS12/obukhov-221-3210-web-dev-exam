@@ -194,8 +194,8 @@
             </div>
         </section>
         <!-- Блок выбора гида -->
-        <section class="container-fluid p-3 mx-auto">
-            <h2 class="text-center mb-3">Выбор гида</h2>
+        <section class="container-fluid p-3 mx-auto hidden" id="guides-section">
+            <h2 class="text-center mb-3">Доступные гиды по маршруту</h2>
             <div class="line mx-auto my-3"></div>
 
             <!-- Выбор по опыту и языку -->
@@ -203,10 +203,6 @@
                 <!-- Выбор языка -->
                 <div class="d-block col-md-4 mb-3 mb-md-0 form-floating">
                     <select id="langSelect" class="form-select form-select-sm">
-                        <option value="1">Язык 1</option>
-                        <option value="2">Язык 2</option>
-                        <option value="3">Язык 3</option>
-                        <option value="4">Язык 4</option>
                     </select>
                     <label for="langSelect">Язык экскурсии</label>
                 </div>
@@ -219,7 +215,7 @@
                             <label for="expFrom">от</label>
                         </div>
                         <div class="col-md-4 form-floating">
-                            <input class="form-control" type="number" id="expTo" value="10">
+                            <input class="form-control" type="number" id="expTo" value="100">
                             <label for="expTo">до</label>
                         </div>
                     </div>
@@ -227,7 +223,7 @@
             </div>
 
             <div class="py-3 px-lg-5 px-1">
-                <table class="table text-center">
+                <table class="table text-center" id="guides-table-link">
                     <thead class="align-middle">
                         <tr>
                             <th>ФИО</th>
@@ -237,7 +233,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody class="align-middle">
+                    <tbody class="align-middle" id="guides-table">
                         <tr>
                             <td>ФИО 1</td>
                             <td>Язык 1</td>
