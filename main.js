@@ -99,6 +99,7 @@ function displayRoutes() {
         button.innerHTML = "Выбрать";
         button.onclick = async function () {
             currentRoute = id;
+            currentGuide = undefined;
             
             let rows = document.querySelectorAll("#routes-table tbody tr");
             for (let row of rows) {
