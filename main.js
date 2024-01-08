@@ -2,12 +2,14 @@ const server = "http://exam-2023-1-api.std-900.ist.mospolytech.ru";
 const api = "c6ee856e-5b24-4d60-966a-4ed70a6a1134";
 
 let routesList = []; // Список всех маршрутов
+let filteredRoutesList = []; // Список отфильтрованных маршрутов
 let currentPage = 1; // Текущая страница
 let maxPage; // Максимальное число страниц
 let currentRoute; // Выбранный маршрут
 let currentGuide; // Выбранный гид
 let guidesList = []; // Гиды для выбранного маршрута
-let selectedLang; // Выбранный язык гида
+let selectedLang = ""; // Выбранный язык гида
+let selectedObject = "";
 
 // Генерация URL
 function genURL(path) {
@@ -15,6 +17,28 @@ function genURL(path) {
     url.searchParams.set("api_key", api);
     return url;
 };
+
+// Фильтрует маршруты
+function filterRoutes() {
+    filteredRoutesList = [];
+    // Имя маршрута для фильрации
+    let reqName = document.getElementById("routeName").value;
+
+    for (let route of routesList) {
+        // Фильтрация по имени
+        if (route.name.includes(reqName)) {
+            // Фильтрация по объекту
+            if (route.mainObject.includes(selectedObject)) {
+                filteredRoutesList.push(route);
+            }
+        }
+    }
+    maxPage = filteredRoutesList.length / 5;
+    if (maxPage % 1 > 0) {
+        maxPage = Math.floor(maxPage) + 1;
+    }
+    paginationWorker(1);
+}
 
 function createPageButton(pageNum) {
     let btn = document.createElement("button");
@@ -27,12 +51,11 @@ function createPageButton(pageNum) {
 
     btn.innerHTML = pageNum;
     btn.onclick = function () {
-        paginationWoker(btn.innerHTML);
+        paginationWorker(btn.innerHTML);
     };
     return btn;
 }
-
-function paginationWoker(page) {
+function paginationWorker(page) {
     page = Number(page);
     currentPage = page;
     displayRoutes(page);
@@ -87,21 +110,19 @@ function displayRoutes() {
     let table = document.getElementById("routes-table");
     let tbody = table.querySelector("tbody");
     tbody.innerHTML = "";
-    let selector = document.getElementById("mainObject");
-    selector.innerHTML = "";
 
     let start = 5 * (currentPage - 1);
-    let end = Math.min(currentPage * 5, routesList.length);
+    let end = Math.min(currentPage * 5, filteredRoutesList.length);
 
     for (let i = start; i < end; i++) {
-        let id = routesList[i].id;
-        let name = routesList[i].name;
-        let desc = routesList[i].description;
-        let objects = routesList[i].mainObject;
+        let id = filteredRoutesList[i].id;
+        let name = filteredRoutesList[i].name;
+        let desc = filteredRoutesList[i].description;
+        let objects = filteredRoutesList[i].mainObject;
 
         let trow = document.createElement("tr");
-        
-        if (routesList[i].id == currentRoute) {
+
+        if (filteredRoutesList[i].id == currentRoute) {
             trow.classList.add("table-secondary");
         }
 
@@ -155,10 +176,6 @@ function displayRoutes() {
         trow.appendChild(btnCell);
         tbody.appendChild(trow);
     }
-    // let selChild = document.createElement("option");
-    // selChild.setAttribute("value", id);
-    // selChild.innerHTML = name;
-    // selector.appendChild(selChild);
 }
 
 // Получение списка маршрутов
@@ -172,10 +189,6 @@ async function getRoutes() {
         for (let route of json) {
 
             routes.push(route);
-        }
-        maxPage = routes.length / 5;
-        if (maxPage % 1 > 0) {
-            maxPage = Math.floor(maxPage) + 1;
         }
         return routes;
     } else {
@@ -206,7 +219,7 @@ function displayGuides() {
     guidesTable.innerHTML = "";
 
     for (let guide of guidesList) {
-        if (selectedLang == undefined || selectedLang == guide.language) {
+        if (!selectedLang || selectedLang == guide.language) {
             if (expFrom <= guide.workExperience && expTo >= guide.workExperience) {
                 let tr = document.createElement("tr");
 
@@ -293,29 +306,40 @@ window.onload = async function () {
         window.location.href = "account.html";
     };
     routesList = await getRoutes();
+    filterRoutes();
     displayRoutes(currentPage);
-    paginationWoker(currentPage);
+    paginationWorker(currentPage);
     objectParser();
+
+    let nameInput = document.getElementById("routeName");
+    nameInput.onchange = filterRoutes;
+
+    let objSelect = document.getElementById("mainObject");
+    objSelect.onchange = function () {
+        selectedObject = objSelect[objSelect.selectedIndex].value;
+        if (selectedObject == "Не выбран") {
+            selectedObject = "";
+        }
+        filterRoutes();
+    }
 
     let langSelect = document.getElementById("langSelect");
     langSelect.onchange = function () {
         selectedLang = langSelect[langSelect.selectedIndex].value;
         if (selectedLang == "Любой") {
-            selectedLang = undefined;
+            selectedLang = "";
         }
         displayGuides();
     };
 
-    // let expFromInput = document.getElementById("expFrom");
-    // expFromInput.oninput = displayGuides;
     document.getElementById("expFrom").oninput = displayGuides;
     document.getElementById("expTo").oninput = displayGuides;
 
     document.querySelector(".first-page-btn").onclick = function () {
-        paginationWoker(1);
+        paginationWorker(1);
     };
     document.querySelector(".last-page-btn").onclick = function () {
-        paginationWoker(maxPage);
+        paginationWorker(maxPage);
     };
 
 };
