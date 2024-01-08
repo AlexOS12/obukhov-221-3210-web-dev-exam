@@ -124,6 +124,28 @@
                 </table>
             </div>
         </section>
+        <!-- Модальное окно подтверждения удаления -->
+        <section>
+              <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="delModalLabel">Удалить заявку?</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>
+                        Вы точно хотите удалить эту заявку?
+                      </p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                      <button type="button" id="delConfirm" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteOrder(this)">Удалить</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"

@@ -10,6 +10,22 @@ function genURL(path) {
     return url;
 };
 
+// Удаление заявки
+async function deleteOrder(eventer) {
+    let orderId = eventer.getAttribute("orderId");
+    let url = genURL(`orders/${orderId}`);
+
+    let res = await fetch(url, {
+        method: "DELETE"
+    })
+    if (res.ok) {
+        orderList = await getOrders();
+        displayOrders();
+    } else {
+        alert(res.status);
+    }
+}
+
 // Отображение списка заявок
 async function displayOrders() {
     let table = document.getElementById("orders-table");
@@ -38,6 +54,12 @@ async function displayOrders() {
         let editBtn = document.createElement("i");
         editBtn.classList.add("bi", "bi-pencil");
         let delBtn = document.createElement("i");
+        delBtn.setAttribute("data-bs-toggle", "modal");
+        delBtn.setAttribute("data-bs-target", "#deleteModal");
+        delBtn.onclick = function () {
+            let confButton = document.getElementById("delConfirm");
+            confButton.setAttribute("orderId", order.id);
+        };
         delBtn.classList.add("bi", "bi-trash");
 
         btnCell.appendChild(viewBtn);
