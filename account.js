@@ -65,7 +65,27 @@ async function fillForm(orderId) {
     let priceField = document.getElementById("totalPrice");
     priceField.innerHTML = order.price;
   
-    // let quickGuideField =
+    let quickGuide = document.getElementById("quickGuide");
+    if (!order.optionFirst) {
+        quickGuide.classList.add("hidden");
+    } else {
+        quickGuide.classList.remove("hidden");
+    }
+
+    let quickGuideField = document.getElementById("quickGuidePrice");
+    let quickGuidePrice = guide.pricePerHour * order.duration * 0.3;
+    quickGuideField.innerHTML = `${Math.floor(quickGuidePrice)} &#8381; (30%)`;
+    
+    let sli = document.getElementById("sliDiv")
+    if (!order.optionSecond) {
+        sli.classList.add("hidden");
+    } else {
+        sli.classList.remove("hidden");
+    }
+    let sliField = document.getElementById("sliPrice");
+    let sliPercent = order.persons > 10 ? 25 : 15;
+    let sliPrice = guide.pricePerHour * order.duration * (sliPercent / 100);
+    sliField.innerHTML = `${Math.floor(sliPrice)} &#8381; (${sliPercent}%)`;
 };
 
 // Отображение списка заявок
@@ -144,7 +164,6 @@ async function getOrders() {
 async function getRoute(routeId) {
     let url = genURL(`routes/${routeId}`);
     let res = await fetch(url);
-    let routes = [];
 
     if (res.ok) {
         let route = await res.json();
