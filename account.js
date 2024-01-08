@@ -77,4 +77,5 @@ window.onload = async function () {
     };
 
     orderList = await getOrders();
+    displayOrders();
 };
