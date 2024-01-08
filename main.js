@@ -5,6 +5,7 @@ let routesList = []; // Список всех маршрутов
 let currentPage = 1; // Текущая страница
 let maxPage; // Максимальное число страниц
 let currentRoute; // Выбранный маршрут
+let currentGuide; // Выбранный гид
 let guidesList = []; // Гиды для выбранного маршрута
 let selectedLang; // Выбранный язык гида
 
@@ -67,6 +68,10 @@ function displayRoutes() {
         let objects = routesList[i].mainObject;
 
         let trow = document.createElement("tr");
+        
+        if (routesList[i].id == currentRoute) {
+            trow.classList.add("table-secondary");
+        }
 
         let nameCell = document.createElement("td");
         nameCell.innerHTML = name;
@@ -94,8 +99,18 @@ function displayRoutes() {
         button.innerHTML = "Выбрать";
         button.onclick = async function () {
             currentRoute = id;
+            
+            let rows = document.querySelectorAll("#routes-table tbody tr");
+            for (let row of rows) {
+                row.classList.remove("table-secondary");
+            };
+
+            this.closest("tr").classList.add("table-secondary");
+
             guidesList = await getGuides();
             displayGuides(guidesList);
+
+
             window.location.href = "#guides-table-link";
         };
 
@@ -161,6 +176,11 @@ function displayGuides() {
         if (selectedLang == undefined || selectedLang == guide.language) {
             if (expFrom <= guide.workExperience && expTo >= guide.workExperience) {
                 let tr = document.createElement("tr");
+
+                if (guide.id == currentGuide) {
+                    tr.classList.add("table-secondary");
+                }
+
                 let nameCell = document.createElement("td");
                 nameCell.innerHTML = guide.name;
                 let langCell = document.createElement("td");
@@ -173,7 +193,17 @@ function displayGuides() {
                 let button = document.createElement("button");
                 button.classList.add("btn", "btn-primary", "px-2");
                 button.innerHTML = "Выбрать";
-                button.onclick = orderExcursion;
+                button.onclick = function () {
+                    currentGuide = guide.id;
+
+                    let rows = document.querySelectorAll("#guides-table tr");
+                    for (let row of rows) {
+                        row.classList.remove("table-secondary");
+                    }
+
+                    this.closest("tr").classList.add("table-secondary");
+
+                }
                 btnCell.appendChild(button);
 
                 tr.appendChild(nameCell);
