@@ -9,7 +9,7 @@ let currentRoute; // Выбранный маршрут
 let currentGuide; // Выбранный гид
 let guidesList = []; // Гиды для выбранного маршрута
 let selectedLang = ""; // Выбранный язык гида
-let selectedObject = "";
+let selectedObject = ""; // Выбранный объект
 
 // Генерация URL
 function genURL(path) {
@@ -164,6 +164,8 @@ function displayRoutes() {
             guidesList = await getGuides();
             displayGuides(guidesList);
 
+            let orderSection = document.getElementById("order-section");
+            orderSection.classList.add("hidden");
 
             window.location.href = "#guides-table-link";
         };
@@ -195,10 +197,6 @@ async function getRoutes() {
         alert(res.status);
     }
 };
-
-function orderExcursion() {
-    alert("Hello!");
-}
 
 function displayGuides() {
     // expFrom и expTo - опыт гида от и до соотвественно
@@ -249,6 +247,11 @@ function displayGuides() {
 
                     this.closest("tr").classList.add("table-secondary");
 
+                    if (currentGuide && currentRoute) {
+                        let orderSection = document.getElementById("order-section");
+                        orderSection.classList.remove("hidden");
+                        window.location.href = "#order-section";
+                    }
                 }
                 btnCell.appendChild(button);
 
@@ -300,6 +303,163 @@ async function getGuides() {
 
 }
 
+function checkOptions() {
+    let sliCheck = document.getElementById("sli");
+    let people = document.getElementById("excPeople").value;
+
+    if (people > 10) {
+        sliCheck.checked = false;
+        sliCheck.disabled = true;
+    } else {
+        sliCheck.disabled = false;
+    }
+    priceCalculator();
+}
+
+function isDayOff(date) {
+    let day = new Date(date);
+    if (day.getDay() == 6 || day.getDay() == 7) {
+        return true;
+    }
+    if (date >= "2024-01-01" && date <= "2024-01-08") {
+        return true;
+    }
+    let daysOff = ["2024-02-23", "2024-03-08", "2024-04-29", "2024-04-30",
+        "2024-05-01", "2024-05-09", "2024-05-10", "2024-06-12",
+        "2024-10-04", "2024-12-30", "2024-12-31"];
+
+    if (daysOff.includes(date)) {
+        return true;
+    }
+    return false;
+}
+
+function priceCalculator() {
+    let quickGuide = document.getElementById("quickGuide").checked;
+    let sli = document.getElementById("sli").checked;
+    let people = document.getElementById("excPeople").value;
+    let duration = document.getElementById("excDuration").value;
+    let date = document.getElementById("excDate").value;
+    let time = document.getElementById("excTime").value;
+
+
+    let curGuide; // гид экскурсии
+    for (let guide of guidesList) {
+        if (guide.id == currentGuide) {
+            curGuide = guide;
+        }
+    }
+    // Стоимость экскурсовода
+    let price = curGuide.pricePerHour * duration;
+    let priceIncrease = 1;
+
+    // доп опция 1
+    if (quickGuide) {
+        priceIncrease += 0.3;
+    }
+    // доп опция 2
+    if (sli) {
+        if (people <= 5) {
+            priceIncrease += 0.15;
+        } else {
+            priceIncrease += 0.25;
+        }
+    }
+    // Если праздник или выходной
+    if (isDayOff(date)) {
+        priceIncrease += 0.5;
+    }
+    price *= priceIncrease
+    // если много посетителей
+    if (people > 4 && people <= 10) {
+        price += 1000;
+    } else if (people > 10) {
+        price += 1500;
+    }
+    // если утро
+    if (time >= "09:00" && time <= "12:00") {
+        price += 400;
+    }
+    // если вечер 
+    if (time >= "20:00" && time <= "23:00") {
+        price += 1000;
+    }
+
+    let priceDisplay = document.getElementById("totalPrice");
+    priceDisplay.innerHTML = Math.round(price);
+}
+
+async function orderExcursion() {
+    let curGuide; // гид экскурсии
+    for (let guide of guidesList) {
+        if (guide.id == currentGuide) {
+            curGuide = guide;
+        }
+    }
+    document.querySelector("#guideName").innerHTML = curGuide.name;
+
+    let curRoute; // маршрут экскурсии
+    for (let route of routesList) {
+        if (route.id == currentRoute) {
+            curRoute = route;
+        }
+    }
+    document.querySelector("#nameRoute").innerHTML = curRoute.name;
+
+    let time = document.getElementById("excTime").value;
+    let date = document.getElementById("excDate").value;
+    let duration = document.getElementById("excDuration").value;
+    let people = document.getElementById("excPeople").value;
+    let price = document.getElementById("totalPrice").innerHTML;
+    let quickGuide = document.getElementById("quickGuide").checked;
+    let sli = document.getElementById("sli").checked;
+
+    if (time != "" & date != "" & duration != "" & people != "") {
+        let modal = document.getElementById("order-modal");
+        let modalInstance = bootstrap.Modal.getInstance(modal);
+        modalInstance.hide();
+        let url = genURL("orders");
+        console.log(url);
+        let form = new FormData();
+        form.append("guide_id", currentGuide);
+        form.append("route_id", currentRoute);
+        form.append("date", date);
+        form.append("time", time);
+        form.append("duration", duration);
+        form.append("persons", people);
+        form.append("price", price);
+        form.append("optionFirst", Number(quickGuide));
+        form.append("optionSecond", Number(sli));
+        console.log(form);
+        let response = await fetch(url, {
+            method: "POST",
+            body: form
+        });
+        console.log(response)
+    } else {
+        console.log("Не все поля заполнены");
+    }
+}
+
+function fillForm(event) {
+    let curGuide; // гид экскурсии
+    for (let guide of guidesList) {
+        if (guide.id == currentGuide) {
+            curGuide = guide;
+        }
+    }
+    event.target.querySelector("#guideName").innerHTML = curGuide.name;
+
+    let curRoute; // маршрут экскурсии
+    for (let route of routesList) {
+        if (route.id == currentRoute) {
+            curRoute = route;
+        }
+    }
+    event.target.querySelector("#nameRoute").innerHTML = curRoute.name;
+    priceCalculator();
+};
+
 window.onload = async function () {
     let accountBtn = document.getElementById("accBtn");
     accountBtn.onclick = function () {
@@ -342,4 +502,6 @@ window.onload = async function () {
         paginationWorker(maxPage);
     };
 
+    let orderModal = document.getElementById("order-modal");
+    orderModal.addEventListener("show.bs.modal", fillForm);
 };
