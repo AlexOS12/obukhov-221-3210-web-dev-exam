@@ -26,6 +26,48 @@ async function deleteOrder(eventer) {
     }
 }
 
+// Заполнение формы просмотра
+async function fillForm(orderId) {
+
+    let url = genURL(`orders/${orderId}`);
+    let res = await fetch(url);
+    
+    if (!res.ok) {
+        console.log(res.status);
+        return;
+    }
+    let order = await res.json();
+
+    let guideNameField = document.getElementById("guideName");
+    let guide = await getGuide(order.guide_id);
+    guideNameField.innerHTML = guide.name;
+
+    let routeNameField = document.getElementById("nameRoute");
+    let route = await getRoute(order.route_id);
+    routeNameField.innerHTML = route.name;
+    
+    let dateField = document.getElementById("excDate");
+    dateField.innerHTML = order.date;
+
+    let timeField = document.getElementById("excTime");
+    timeField.innerHTML = order.time;
+
+    let durationField = document.getElementById("excDuration");
+    if (order.duration == 1) {
+        durationField.innerHTML = "1 час";
+    } else {
+        durationField.innerHTML = `${order.duration} часа`;
+    }
+
+    let peopleField = document.getElementById("excPeople");
+    peopleField.innerHTML = order.persons;
+
+    let priceField = document.getElementById("totalPrice");
+    priceField.innerHTML = order.price;
+  
+    // let quickGuideField =
+};
+
 // Отображение списка заявок
 async function displayOrders() {
     let table = document.getElementById("orders-table");
@@ -51,6 +93,11 @@ async function displayOrders() {
         let btnCell = document.createElement("td");
         let viewBtn = document.createElement("i");
         viewBtn.classList.add("bi", "bi-eye");
+        viewBtn.setAttribute("data-bs-toggle", "modal");
+        viewBtn.setAttribute("data-bs-target", "#view-modal");
+        viewBtn.onclick = function () {
+            fillForm(order.id);
+        }
         let editBtn = document.createElement("i");
         editBtn.classList.add("bi", "bi-pencil");
         let delBtn = document.createElement("i");
