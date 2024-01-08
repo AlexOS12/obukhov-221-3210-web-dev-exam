@@ -11,7 +11,7 @@ function genURL(path) {
 };
 
 // Отображение списка заявок
-function displayOrders() {
+async function displayOrders() {
     let table = document.getElementById("orders-table");
     let tbody = table.querySelector("tbody");
     tbody.innerHTML = "";
@@ -19,14 +19,14 @@ function displayOrders() {
     for (let order of orderList) {
         let tr = document.createElement("tr");
         let id = order.id;
-        let routeName = "Маршрут" + id;
+        let route = await getRoute(order.route_id);
         let date = order.date;
         let price = order.price;
 
         let idCell = document.createElement("td");
         idCell.innerHTML = id;
         let routeCell = document.createElement("td");
-        routeCell.innerHTML = routeName;
+        routeCell.innerHTML = route.name;
         let dateCell = document.createElement("td");
         dateCell.innerHTML = date;
         let priceCell = document.createElement("td");
@@ -47,6 +47,7 @@ function displayOrders() {
         tr.appendChild(idCell);
         tr.appendChild(routeCell);
         tr.appendChild(dateCell);
+        tr.appendChild(priceCell);
         tr.appendChild(btnCell);
 
         tbody.appendChild(tr);
@@ -65,6 +66,33 @@ async function getOrders() {
             orders.push(order);
         }
         return orders;
+    } else {
+        alert(res.status);
+    }
+};
+
+// Получение списка маршрутов
+async function getRoute(routeId) {
+    let url = genURL(`routes/${routeId}`);
+    let res = await fetch(url);
+    let routes = [];
+
+    if (res.ok) {
+        let route = await res.json();
+        return route;
+    } else {
+        alert(res.status);
+    }
+};
+
+// Получение списка гидов
+async function getGuide(guideId) {
+    let url = genURL(`guides/${guideId}`);
+    let res = await fetch(url);
+
+    if (res.ok) {
+        let guide = await res.json();
+        return guide;
     } else {
         alert(res.status);
     }
