@@ -44,9 +44,41 @@ function paginationWoker(page) {
 
     let start = Math.max(page - 3, 1);
     let end = Math.min(page + 3, maxPage);
-    console.log(start, end, page - 3, page + 3);
     for (let i = start; i <= end; i++) {
         pageBtns.appendChild(createPageButton(i));
+    }
+};
+
+// Парсинг и вывод объектов в селектор
+function objectParser() {
+    let objects = [];
+    let objSelector = document.getElementById("mainObject");
+    let objectsList = [];
+
+    for (let route of routesList) {
+        objectsList.push(route.mainObject);
+    };
+
+    for (let cluster of objectsList) {
+        let clusterObjects = cluster.split(" - ");
+        for (let object of clusterObjects) {
+            if (object.length > 40) {
+                object = object.slice(0, 40);
+            }
+            if (!objects.includes(object)) {
+                objects.push(object);
+            }
+        };
+    };
+
+    let option = document.createElement("option");
+    option.innerHTML = "Не выбран";
+    objSelector.appendChild(option);
+
+    for (let object of objects) {
+        let option = document.createElement("option");
+        option.innerHTML = object;
+        objSelector.appendChild(option);
     }
 };
 
@@ -100,7 +132,7 @@ function displayRoutes() {
         button.onclick = async function () {
             currentRoute = id;
             currentGuide = undefined;
-            
+
             let rows = document.querySelectorAll("#routes-table tbody tr");
             for (let row of rows) {
                 row.classList.remove("table-secondary");
@@ -165,7 +197,7 @@ function displayGuides() {
         expFrom = 0;
     }
     let expTo = document.getElementById("expTo").value;
-    console.log(expFrom, expTo);
+
     if (expTo == "" || expTo < expFrom) {
         document.getElementById("expTo").value = expFrom;
         expTo = expFrom;
@@ -263,6 +295,7 @@ window.onload = async function () {
     routesList = await getRoutes();
     displayRoutes(currentPage);
     paginationWoker(currentPage);
+    objectParser();
 
     let langSelect = document.getElementById("langSelect");
     langSelect.onchange = function () {
