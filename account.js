@@ -60,8 +60,8 @@ async function getOrders() {
     let orders = [];
 
     if (res.ok) {
-        let json = await res.json;
-        for (let order of orders) {
+        let json = await res.json();
+        for (let order of json) {
             orders.push(order);
         }
         return orders;
@@ -75,7 +75,6 @@ window.onload = async function () {
     homeBtn.onclick = function () {
         window.location.href = "index.html";
     };
-
     orderList = await getOrders();
     displayOrders();
 };
