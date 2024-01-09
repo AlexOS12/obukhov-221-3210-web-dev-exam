@@ -20,7 +20,7 @@ function genURL(path) {
 };
 
 // Отображение уведомлений
-function displayAlert(message, status="good") {
+function displayAlert(message, status = "good") {
     // Статусы:
     // good - уведомление об успехе
     // attention - информационное сообщение
@@ -49,148 +49,111 @@ function displayAlert(message, status="good") {
     setTimeout(() => messageDiv.remove(), 2000);
 }
 
-// Фильтрует маршруты
-function filterRoutes() {
-    filteredRoutesList = [];
-    // Имя маршрута для фильрации
-    let reqName = document.getElementById("routeName").value;
+async function getGuides() {
+    let url = genURL(`routes/${currentRoute}/guides`);
+    let guides = [];
+    let languages = [];
+    let res = await fetch(url);
+    let langSelect = document.getElementById("langSelect");
 
-    for (let route of routesList) {
-        // Фильтрация по имени
-        if (route.name.includes(reqName)) {
-            // Фильтрация по объекту
-            if (route.mainObject.includes(selectedObject)) {
-                filteredRoutesList.push(route);
+    if (res.ok) {
+        let json = await res.json();
+        for (let guide of json) {
+            guides.push(guide);
+            if (!languages.includes(guide.language)) {
+                languages.push(guide.language);
             }
         }
-    }
-    maxPage = filteredRoutesList.length / 5;
-    if (maxPage % 1 > 0) {
-        maxPage = Math.floor(maxPage) + 1;
-    }
-    paginationWorker(1);
-}
 
-function createPageButton(pageNum) {
-    let btn = document.createElement("button");
-    btn.setAttribute("type", "button");
-    btn.classList.add("btn", "btn-primary", "px-2", "mx-1");
-
-    if (pageNum == currentPage) {
-        btn.classList.add("current-page-button");
-    }
-
-    btn.innerHTML = pageNum;
-    btn.onclick = function () {
-        paginationWorker(btn.innerHTML);
-    };
-    return btn;
-}
-
-// Работа с пагинацией
-function paginationWorker(page) {
-    let maxPage = Math.ceil(filteredRoutesList.length / 5);
-    let pgBtns = document.getElementById("pageBtns");
-    pgBtns.innerHTML = "";
-
-    currentPage = Math.min(page, maxPage);
-
-    let start = Math.max(currentPage - 2, 1);
-    let end = Math.min(maxPage, page + 2);
-
-    // создание кнопки перехода на 1-ю страницу
-    let firstPageBtn = document.createElement("li");
-    firstPageBtn.setAttribute("href", "#routes-table");
-    firstPageBtn.classList.add("page-item");
-    let firstPageLink = document.createElement("a");
-    firstPageLink.classList.add("page-link");
-    firstPageLink.setAttribute("href", "#routes-table")
-    firstPageLink.innerHTML = "&laquo;&laquo;";
-    firstPageBtn.appendChild(firstPageLink);
-    if (currentPage == 1) {
-        firstPageBtn.classList.add("disabled");
-    } else {
-        firstPageBtn.onclick = function () {
-            paginationWorker(1);
-        }
-    }
-
-    // создание кнопки перехода на последнюю страницу
-    let lastPageBtn = document.createElement("li");
-    lastPageBtn.setAttribute("href", "#routes-table");
-    lastPageBtn.classList.add("page-item");
-    let lastPageLink = document.createElement("a");
-    lastPageLink.classList.add("page-link");
-    lastPageLink.setAttribute("href", "#routes-table")
-    lastPageLink.innerHTML = "&raquo;&raquo;";
-    lastPageBtn.appendChild(lastPageLink);
-    if (currentPage == maxPage) {
-        lastPageBtn.classList.add("disabled");
-    } else {
-        lastPageBtn.onclick = function () {
-            paginationWorker(maxPage);
-        }
-    }
-
-    pgBtns.appendChild(firstPageBtn);
-
-    // создание остальных кнопок страниц
-    for (let i = start; i <= end; i++) {
-        let pageItem = document.createElement("li");
-        pageItem.setAttribute("href", "#routes-table");
-        pageItem.classList.add("page-item");
-        if (i == currentPage) {
-            pageItem.classList.add("active");
-        } else {
-            pageItem.onclick = function () {
-                paginationWorker(i);
-            }
-        }
-        let pageLink = document.createElement("a");
-        pageLink.classList.add("page-link");
-        pageLink.setAttribute("href", "#routes-table");
-        pageLink.innerHTML = i;
-        pageItem.appendChild(pageLink);
-        pgBtns.appendChild(pageItem);
-    }
-
-    pgBtns.appendChild(lastPageBtn);
-
-    displayRoutes();
-};
-
-// Парсинг и вывод объектов в селектор
-function objectParser() {
-    let objects = [];
-    let objSelector = document.getElementById("mainObject");
-    let objectsList = [];
-
-    for (let route of routesList) {
-        objectsList.push(route.mainObject);
-    };
-
-    for (let cluster of objectsList) {
-        let clusterObjects = cluster.split(" - ");
-        for (let object of clusterObjects) {
-            if (object.length > 40) {
-                object = object.slice(0, 40);
-            }
-            if (!objects.includes(object)) {
-                objects.push(object);
-            }
-        };
-    };
-
-    let option = document.createElement("option");
-    option.innerHTML = "Не выбран";
-    objSelector.appendChild(option);
-
-    for (let object of objects) {
+        langSelect.innerHTML = "";
+        selectedLang = undefined;
         let option = document.createElement("option");
-        option.innerHTML = object;
-        objSelector.appendChild(option);
+        option.innerHTML = "Любой";
+        langSelect.appendChild(option);
+
+        for (let language of languages) {
+            let option = document.createElement("option");
+            option.innerHTML = language;
+            option.setAttribute("value", language);
+            langSelect.appendChild(option);
+        }
+        return guides;
+    } else {
+        displayAlert(res.status, "error");
     }
-};
+
+}
+
+function displayGuides() {
+    // expF и expT - опыт гида от и до соотвественно
+    let guidesTable = document.getElementById("guides-table");
+    let guidesSection = document.getElementById("guides-section");
+    let expF = document.getElementById("expFrom").value;
+    if (expF == "" || expF < 0) {
+        document.getElementById("expFrom").value = 0;
+        expF = 0;
+    }
+    let expT = document.getElementById("expTo").value;
+
+    if (expT == "" || expT < expF) {
+        document.getElementById("expTo").value = expF;
+        expT = expF;
+    }
+    guidesSection.classList.remove("hidden");
+    guidesTable.innerHTML = "";
+
+    for (let guide of guidesList) {
+        if (!selectedLang || selectedLang == guide.language) {
+            if (expF <= guide.workExperience && expT >= guide.workExperience) {
+                let tr = document.createElement("tr");
+
+                if (guide.id == currentGuide) {
+                    tr.classList.add("table-secondary");
+                }
+
+                let nameCell = document.createElement("td");
+                nameCell.innerHTML = guide.name;
+                let langCell = document.createElement("td");
+                langCell.innerHTML = guide.language;
+                let expCell = document.createElement("td");
+                expCell.innerHTML = guide.workExperience;
+                let priceCell = document.createElement("td");
+                priceCell.innerHTML = guide.pricePerHour;
+                let btnCell = document.createElement("td");
+                let button = document.createElement("button");
+                button.classList.add("btn", "btn-primary", "px-2");
+                button.innerHTML = "Выбрать";
+                button.onclick = function () {
+                    currentGuide = guide.id;
+
+                    let rows = document.querySelectorAll("#guides-table tr");
+                    for (let row of rows) {
+                        row.classList.remove("table-secondary");
+                    }
+
+                    this.closest("tr").classList.add("table-secondary");
+
+                    if (currentGuide && currentRoute) {
+                        let orderSection;
+                        orderSection = document.getElementById("order-section");
+                        orderSect.classList.remove("hidden");
+                        window.location.href = "#order-section";
+                    }
+                };
+                btnCell.appendChild(button);
+
+                tr.appendChild(nameCell);
+                tr.appendChild(langCell);
+                tr.appendChild(expCell);
+                tr.appendChild(priceCell);
+                tr.appendChild(btnCell);
+
+                guidesTable.appendChild(tr);
+            }
+
+        }
+    }
+}
 
 // Вывод маршрутов в таблицы по 5 элементов на страницу
 function displayRoutes() {
@@ -267,6 +230,149 @@ function displayRoutes() {
     }
 }
 
+// Работа с пагинацией
+function paginationWorker(page) {
+    let maxPage = Math.ceil(filteredRoutesList.length / 5);
+    let pgBtns = document.getElementById("pageBtns");
+    pgBtns.innerHTML = "";
+
+    currentPage = Math.min(page, maxPage);
+
+    let start = Math.max(currentPage - 2, 1);
+    let end = Math.min(maxPage, page + 2);
+
+    // создание кнопки перехода на 1-ю страницу
+    let firstPageBtn = document.createElement("li");
+    firstPageBtn.setAttribute("href", "#routes-table");
+    firstPageBtn.classList.add("page-item");
+    let firstPageLink = document.createElement("a");
+    firstPageLink.classList.add("page-link");
+    firstPageLink.setAttribute("href", "#routes-table");
+    firstPageLink.innerHTML = "&laquo;&laquo;";
+    firstPageBtn.appendChild(firstPageLink);
+    if (currentPage == 1) {
+        firstPageBtn.classList.add("disabled");
+    } else {
+        firstPageBtn.onclick = function () {
+            paginationWorker(1);
+        };
+    }
+
+    // создание кнопки перехода на последнюю страницу
+    let lastPageBtn = document.createElement("li");
+    lastPageBtn.setAttribute("href", "#routes-table");
+    lastPageBtn.classList.add("page-item");
+    let lastPageLink = document.createElement("a");
+    lastPageLink.classList.add("page-link");
+    lastPageLink.setAttribute("href", "#routes-table");
+    lastPageLink.innerHTML = "&raquo;&raquo;";
+    lastPageBtn.appendChild(lastPageLink);
+    if (currentPage == maxPage) {
+        lastPageBtn.classList.add("disabled");
+    } else {
+        lastPageBtn.onclick = function () {
+            paginationWorker(maxPage);
+        };
+    }
+
+    pgBtns.appendChild(firstPageBtn);
+
+    // создание остальных кнопок страниц
+    for (let i = start; i <= end; i++) {
+        let pageItem = document.createElement("li");
+        pageItem.setAttribute("href", "#routes-table");
+        pageItem.classList.add("page-item");
+        if (i == currentPage) {
+            pageItem.classList.add("active");
+        } else {
+            pageItem.onclick = function () {
+                paginationWorker(i);
+            };
+        }
+        let pageLink = document.createElement("a");
+        pageLink.classList.add("page-link");
+        pageLink.setAttribute("href", "#routes-table");
+        pageLink.innerHTML = i;
+        pageItem.appendChild(pageLink);
+        pgBtns.appendChild(pageItem);
+    }
+
+    pgBtns.appendChild(lastPageBtn);
+
+    displayRoutes();
+};
+
+// Фильтрует маршруты
+function filterRoutes() {
+    filteredRoutesList = [];
+    // Имя маршрута для фильрации
+    let reqName = document.getElementById("routeName").value;
+
+    for (let route of routesList) {
+        // Фильтрация по имени
+        if (route.name.includes(reqName)) {
+            // Фильтрация по объекту
+            if (route.mainObject.includes(selectedObject)) {
+                filteredRoutesList.push(route);
+            }
+        }
+    }
+    maxPage = filteredRoutesList.length / 5;
+    if (maxPage % 1 > 0) {
+        maxPage = Math.floor(maxPage) + 1;
+    }
+    paginationWorker(1);
+}
+
+function createPageButton(pageNum) {
+    let btn = document.createElement("button");
+    btn.setAttribute("type", "button");
+    btn.classList.add("btn", "btn-primary", "px-2", "mx-1");
+
+    if (pageNum == currentPage) {
+        btn.classList.add("current-page-button");
+    }
+
+    btn.innerHTML = pageNum;
+    btn.onclick = function () {
+        paginationWorker(btn.innerHTML);
+    };
+    return btn;
+}
+
+// Парсинг и вывод объектов в селектор
+function objectParser() {
+    let objects = [];
+    let objSelector = document.getElementById("mainObject");
+    let objectsList = [];
+
+    for (let route of routesList) {
+        objectsList.push(route.mainObject);
+    };
+
+    for (let cluster of objectsList) {
+        let clusterObjects = cluster.split(" - ");
+        for (let object of clusterObjects) {
+            if (object.length > 40) {
+                object = object.slice(0, 40);
+            }
+            if (!objects.includes(object)) {
+                objects.push(object);
+            }
+        };
+    };
+
+    let option = document.createElement("option");
+    option.innerHTML = "Не выбран";
+    objSelector.appendChild(option);
+
+    for (let object of objects) {
+        let option = document.createElement("option");
+        option.innerHTML = object;
+        objSelector.appendChild(option);
+    }
+};
+
 // Получение списка маршрутов
 async function getRoutes() {
     let url = genURL("routes");
@@ -284,124 +390,6 @@ async function getRoutes() {
         displayAlert(res.status, "error");
     }
 };
-
-function displayGuides() {
-    // expFrom и expTo - опыт гида от и до соотвественно
-    let guidesTable = document.getElementById("guides-table");
-    let guidesSection = document.getElementById("guides-section");
-    let expFrom = document.getElementById("expFrom").value;
-    if (expFrom == "" || expFrom < 0) {
-        document.getElementById("expFrom").value = 0;
-        expFrom = 0;
-    }
-    let expTo = document.getElementById("expTo").value;
-
-    if (expTo == "" || expTo < expFrom) {
-        document.getElementById("expTo").value = expFrom;
-        expTo = expFrom;
-    }
-    guidesSection.classList.remove("hidden");
-    guidesTable.innerHTML = "";
-
-    for (let guide of guidesList) {
-        if (!selectedLang || selectedLang == guide.language) {
-            if (expFrom <= guide.workExperience && expTo >= guide.workExperience) {
-                let tr = document.createElement("tr");
-
-                if (guide.id == currentGuide) {
-                    tr.classList.add("table-secondary");
-                }
-
-                let nameCell = document.createElement("td");
-                nameCell.innerHTML = guide.name;
-                let langCell = document.createElement("td");
-                langCell.innerHTML = guide.language;
-                let expCell = document.createElement("td");
-                expCell.innerHTML = guide.workExperience;
-                let priceCell = document.createElement("td");
-                priceCell.innerHTML = guide.pricePerHour;
-                let btnCell = document.createElement("td");
-                let button = document.createElement("button");
-                button.classList.add("btn", "btn-primary", "px-2");
-                button.innerHTML = "Выбрать";
-                button.onclick = function () {
-                    currentGuide = guide.id;
-
-                    let rows = document.querySelectorAll("#guides-table tr");
-                    for (let row of rows) {
-                        row.classList.remove("table-secondary");
-                    }
-
-                    this.closest("tr").classList.add("table-secondary");
-
-                    if (currentGuide && currentRoute) {
-                        let orderSection = document.getElementById("order-section");
-                        orderSection.classList.remove("hidden");
-                        window.location.href = "#order-section";
-                    }
-                }
-                btnCell.appendChild(button);
-
-                tr.appendChild(nameCell);
-                tr.appendChild(langCell);
-                tr.appendChild(expCell);
-                tr.appendChild(priceCell);
-                tr.appendChild(btnCell);
-
-                guidesTable.appendChild(tr);
-            }
-
-        }
-    }
-}
-
-async function getGuides() {
-    let url = genURL(`routes/${currentRoute}/guides`);
-    let guides = [];
-    let languages = [];
-    let res = await fetch(url);
-    let langSelect = document.getElementById("langSelect");
-
-    if (res.ok) {
-        let json = await res.json();
-        for (let guide of json) {
-            guides.push(guide);
-            if (!languages.includes(guide.language)) {
-                languages.push(guide.language);
-            }
-        }
-
-        langSelect.innerHTML = "";
-        selectedLang = undefined;
-        let option = document.createElement("option");
-        option.innerHTML = "Любой";
-        langSelect.appendChild(option);
-
-        for (let language of languages) {
-            let option = document.createElement("option");
-            option.innerHTML = language;
-            option.setAttribute("value", language);
-            langSelect.appendChild(option);
-        }
-        return guides;
-    } else {
-        displayAlert(res.status, "error");
-    }
-
-}
-
-function checkOptions() {
-    let sliCheck = document.getElementById("sli");
-    let people = document.getElementById("excPeople").value;
-
-    if (people > 10) {
-        sliCheck.checked = false;
-        sliCheck.disabled = true;
-    } else {
-        sliCheck.disabled = false;
-    }
-    priceCalculator();
-}
 
 function isDayOff(date) {
     let day = new Date(date);
@@ -456,7 +444,7 @@ function priceCalculator() {
     if (isDayOff(date)) {
         priceIncrease += 0.5;
     }
-    price *= priceIncrease
+    price *= priceIncrease;
     // если много посетителей
     if (people > 4 && people <= 10) {
         price += 1000;
@@ -474,6 +462,19 @@ function priceCalculator() {
 
     let priceDisplay = document.getElementById("totalPrice");
     priceDisplay.innerHTML = Math.round(price);
+}
+
+function checkOptions() {
+    let sliCheck = document.getElementById("sli");
+    let people = document.getElementById("excPeople").value;
+
+    if (people > 10) {
+        sliCheck.checked = false;
+        sliCheck.disabled = true;
+    } else {
+        sliCheck.disabled = false;
+    }
+    priceCalculator();
 }
 
 async function orderExcursion() {
@@ -573,7 +574,7 @@ window.onload = async function () {
             selectedObject = "";
         }
         filterRoutes();
-    }
+    };
 
     let langSelect = document.getElementById("langSelect");
     langSelect.onchange = function () {
