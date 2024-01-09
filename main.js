@@ -25,7 +25,7 @@ function displayAlert(message, status = "good") {
     // good - уведомление об успехе
     // attention - информационное сообщение
     // error - уведомление об ошибке
-    
+
     let messageDiv = document.createElement("div");
     messageDiv.classList.add("bg-opacity-75", "rounded", "text-center");
     let messageHeader = document.createElement("h5");
@@ -109,7 +109,7 @@ function displayGuides() {
         document.getElementById("expTo").value = expF;
         expT = expF;
     }
-    
+
     guidesSection.classList.remove("hidden");
     guidesTable.innerHTML = "";
 
@@ -478,6 +478,10 @@ function priceCalculator() {
 function checkOptions() {
     let sliCheck = document.getElementById("sli");
     let people = document.getElementById("excPeople").value;
+
+    if (people > 20) {
+        document.getElementById("excPeople").value = 20;
+    }
 
     if (people > 10) {
         sliCheck.checked = false;

@@ -271,6 +271,10 @@ function checkOptions() {
     let sliCheck = document.getElementById("sli");
     let people = document.getElementById("excPeople").value;
 
+    if (people > 20) {
+        document.getElementById("excPeople").value = 20;
+    }
+
     if (people > 10) {
         sliCheck.checked = false;
         sliCheck.disabled = true;
