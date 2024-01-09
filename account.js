@@ -476,7 +476,8 @@ window.onload = async function () {
     document.getElementById("editOrderBtn").onclick = () => {
         editExcursion();
     };
-    document.getElementById("delConfirm").onclick = () => {
-        deleteOrder(this);
+    let delBtn = document.getElementById("delConfirm");
+    delBtn.onclick = () => {
+        deleteOrder(delBtn);
     };
 };
