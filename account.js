@@ -2,6 +2,9 @@ const server = "http://exam-2023-1-api.std-900.ist.mospolytech.ru";
 const api = "c6ee856e-5b24-4d60-966a-4ed70a6a1134";
 
 let orderList = []; // Список всех заявок
+let currentOrder; // Текущая заявка
+let currentGuide; // Гид текущей заявки
+let currentRoute; // Маршрут текущей заявки
 let currentPage = 1; // Текущая страница
 
 // Генерация URL
@@ -10,6 +13,46 @@ function genURL(path) {
     url.searchParams.set("api_key", api);
     return url;
 };
+
+// Редактирование заявки на сервере
+async function editExcursion() {
+    document.querySelector("#guideName").innerHTML = currentGuide.name;
+    document.querySelector("#nameRoute").innerHTML = currentRoute.name;
+
+    let time = document.getElementById("excTime").value;
+    let date = document.getElementById("excDate").value;
+    let duration = document.getElementById("excDuration").value;
+    let people = document.getElementById("excPeople").value;
+    let price = document.getElementById("totalPrice").innerHTML;
+    let quickGuide = document.getElementById("quickGuide").checked;
+    let sli = document.getElementById("sli").checked;
+
+    if (time != "" & date != "" & duration != "" & people != "") {
+        let modal = document.getElementById("edit-modal");
+        let modalInstance = bootstrap.Modal.getInstance(modal);
+        modalInstance.hide();
+        let url = genURL(`orders/${currentOrder.id}`);
+        console.log(url);
+        let form = new FormData();
+        form.append("guide_id", currentGuide.id);
+        form.append("route_id", currentRoute.id);
+        form.append("date", date);
+        form.append("time", time);
+        form.append("duration", duration);
+        form.append("persons", people);
+        form.append("price", price);
+        form.append("optionFirst", Number(quickGuide));
+        form.append("optionSecond", Number(sli));
+        console.log(form);
+        let response = await fetch(url, {
+            method: "PUT",
+            body: form
+        });
+    } else {
+        console.log("Не все поля заполнены");
+    }
+    orderList = await getOrders();
+}
 
 // Удаление заявки
 async function deleteOrder(eventer) {
@@ -28,7 +71,153 @@ async function deleteOrder(eventer) {
 }
 
 // Заполнение формы просмотра
-async function fillForm(orderId) {
+async function fillViewForm(orderId) {
+    let url = genURL(`orders/${orderId}`);
+    let res = await fetch(url);
+
+    if (!res.ok) {
+        console.log(res.status);
+        return;
+    }
+    let order = await res.json();
+
+    let guideNameField = document.getElementById("guideNameView");
+    let guide = await getGuide(order.guide_id);
+    guideNameField.innerHTML = guide.name;
+
+    let routeNameField = document.getElementById("nameRouteView");
+    let route = await getRoute(order.route_id);
+    routeNameField.innerHTML = route.name;
+
+    let dateField = document.getElementById("excDateView");
+    dateField.innerHTML = order.date;
+
+    let timeField = document.getElementById("excTimeView");
+    timeField.innerHTML = order.time;
+
+    let durationField = document.getElementById("excDurationView");
+    if (order.duration == 1) {
+        durationField.innerHTML = "1 час";
+    } else {
+        durationField.innerHTML = `${order.duration} часа`;
+    }
+
+    let peopleField = document.getElementById("excPeopleView");
+    peopleField.innerHTML = order.persons;
+
+    let priceField = document.getElementById("totalPriceView");
+    priceField.innerHTML = order.price;
+
+    let quickGuide = document.getElementById("quickGuideView");
+    if (!order.optionFirst) {
+        quickGuide.classList.add("hidden");
+    } else {
+        quickGuide.classList.remove("hidden");
+    }
+
+    let quickGuideField = document.getElementById("quickGuidePriceView");
+    let quickGuidePrice = guide.pricePerHour * order.duration * 0.3;
+    quickGuideField.innerHTML = `${Math.floor(quickGuidePrice)} &#8381; (30%)`;
+
+    let sli = document.getElementById("sliDivView")
+    if (!order.optionSecond) {
+        sli.classList.add("hidden");
+    } else {
+        sli.classList.remove("hidden");
+    }
+    let sliField = document.getElementById("sliPriceView");
+    let sliPercent = order.persons > 10 ? 25 : 15;
+    let sliPrice = guide.pricePerHour * order.duration * (sliPercent / 100);
+    sliField.innerHTML = `${Math.floor(sliPrice)} &#8381; (${sliPercent}%)`;
+};
+
+// Проверка является ли день выходным
+function isDayOff(date) {
+    let day = new Date(date);
+    if (day.getDay() == 6 || day.getDay() == 7) {
+        return true;
+    }
+    if (date >= "2024-01-01" && date <= "2024-01-08") {
+        return true;
+    }
+    let daysOff = ["2024-02-23", "2024-03-08", "2024-04-29", "2024-04-30",
+        "2024-05-01", "2024-05-09", "2024-05-10", "2024-06-12",
+        "2024-10-04", "2024-12-30", "2024-12-31"];
+
+    if (daysOff.includes(date)) {
+        return true;
+    }
+    return false;
+}
+
+// Расчёт стоимости заявки
+async function priceCalculator(order) {
+    let quickGuide = document.getElementById("quickGuide").checked;
+    let sli = document.getElementById("sli").checked;
+    let people = document.getElementById("excPeople").value;
+    let duration = document.getElementById("excDuration").value;
+    let date = document.getElementById("excDate").value;
+    let time = document.getElementById("excTime").value;
+
+    // Получение экскурсовода выбранной экскурсии
+    let curGuide = currentGuide;
+
+    // Стоимость экскурсовода
+    let price = curGuide.pricePerHour * duration;
+    let priceIncrease = 1;
+
+    // доп опция 1
+    if (quickGuide) {
+        priceIncrease += 0.3;
+    }
+    // доп опция 2
+    if (sli) {
+        if (people <= 5) {
+            priceIncrease += 0.15;
+        } else {
+            priceIncrease += 0.25;
+        }
+    }
+    // Если праздник или выходной
+    if (isDayOff(date)) {
+        priceIncrease += 0.5;
+    }
+    price *= priceIncrease
+    // если много посетителей
+    if (people > 4 && people <= 10) {
+        price += 1000;
+    } else if (people > 10) {
+        price += 1500;
+    }
+    // если утро
+    if (time >= "09:00" && time <= "12:00") {
+        price += 400;
+    }
+    // если вечер 
+    if (time >= "20:00" && time <= "23:00") {
+        price += 1000;
+    }
+
+    let priceDisplay = document.getElementById("totalPrice");
+    priceDisplay.innerHTML = Math.round(price);
+}
+
+// Проверка опций заявки
+function checkOptions() {
+    let sliCheck = document.getElementById("sli");
+    let people = document.getElementById("excPeople").value;
+
+    if (people > 10) {
+        sliCheck.checked = false;
+        sliCheck.disabled = true;
+    } else {
+        sliCheck.disabled = false;
+    }
+    priceCalculator();
+}
+
+// Заполнение формы редактирования
+async function fillEditForm(orderId) {
     let url = genURL(`orders/${orderId}`);
     let res = await fetch(url);
 
@@ -47,45 +236,27 @@ async function fillForm(orderId) {
     routeNameField.innerHTML = route.name;
 
     let dateField = document.getElementById("excDate");
-    dateField.innerHTML = order.date;
+    dateField.value = order.date;
 
     let timeField = document.getElementById("excTime");
-    timeField.innerHTML = order.time;
+    timeField.value = order.time;
 
-    let durationField = document.getElementById("excDuration");
-    if (order.duration == 1) {
-        durationField.innerHTML = "1 час";
-    } else {
-        durationField.innerHTML = `${order.duration} часа`;
-    }
+    let duratSelect = document.getElementById("excDuration");
+    duratSelect.selectedIndex = order.duration - 1;
 
     let peopleField = document.getElementById("excPeople");
-    peopleField.innerHTML = order.persons;
+    peopleField.value = order.persons;
 
     let priceField = document.getElementById("totalPrice");
     priceField.innerHTML = order.price;
 
     let quickGuide = document.getElementById("quickGuide");
-    if (!order.optionFirst) {
-        quickGuide.classList.add("hidden");
-    } else {
-        quickGuide.classList.remove("hidden");
-    }
+    quickGuide.checked = order.optionFirst;
 
-    let quickGuideField = document.getElementById("quickGuidePrice");
-    let quickGuidePrice = guide.pricePerHour * order.duration * 0.3;
-    quickGuideField.innerHTML = `${Math.floor(quickGuidePrice)} &#8381; (30%)`;
+    let sli = document.getElementById("sli");
+    sli.checked = order.optionSecond;
 
-    let sli = document.getElementById("sliDiv")
-    if (!order.optionSecond) {
-        sli.classList.add("hidden");
-    } else {
-        sli.classList.remove("hidden");
-    }
-    let sliField = document.getElementById("sliPrice");
-    let sliPercent = order.persons > 10 ? 25 : 15;
-    let sliPrice = guide.pricePerHour * order.duration * (sliPercent / 100);
-    sliField.innerHTML = `${Math.floor(sliPrice)} &#8381; (${sliPercent}%)`;
+    checkOptions();
 };
 
 // Отображение списка заявок
@@ -117,17 +288,28 @@ async function displayOrders() {
 
         let btnCell = document.createElement("td");
         let viewBtn = document.createElement("i");
+
         viewBtn.classList.add("bi", "bi-eye");
         viewBtn.setAttribute("data-bs-toggle", "modal");
         viewBtn.setAttribute("data-bs-target", "#view-modal");
         viewBtn.onclick = function () {
-            fillForm(order.id);
+            fillViewForm(order.id);
         }
+
         let editBtn = document.createElement("i");
         editBtn.classList.add("bi", "bi-pencil");
+        editBtn.setAttribute("data-bs-toggle", "modal");
+        editBtn.setAttribute("data-bs-target", "#edit-modal");
+        editBtn.onclick = async function () {
+            currentOrder = order;
+            currentRoute = await getRoute(order.route_id);
+            currentGuide = await getGuide(order.guide_id);
+            fillEditForm(order.id);
+        }
+
         let delBtn = document.createElement("i");
         delBtn.setAttribute("data-bs-toggle", "modal");
-        delBtn.setAttribute("data-bs-target", "#deleteModal");
+        delBtn.setAttribute("data-bs-target", "#delete-modal");
         delBtn.onclick = function () {
             let confButton = document.getElementById("delConfirm");
             confButton.setAttribute("orderId", order.id);
@@ -148,6 +330,7 @@ async function displayOrders() {
     }
 }
 
+// Работа с пагинацией
 function paginationWorker(page) {
     let maxPage = Math.ceil(orderList.length / 5);
     let pgBtns = document.getElementById("pageBtns");
