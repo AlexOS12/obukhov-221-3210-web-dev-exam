@@ -96,12 +96,16 @@ function displayGuides() {
         document.getElementById("expFrom").value = 0;
         expF = 0;
     }
+    expF = Number(expF);
 
     let expT = document.getElementById("expTo").value;
-
     if (expT == "") {
         expT = Infinity;
-    } else if (expT < expF) {
+    } else {
+        expT = Number(expT);
+    }
+
+    if (expT < expF) {
         document.getElementById("expTo").value = expF;
         expT = expF;
     }

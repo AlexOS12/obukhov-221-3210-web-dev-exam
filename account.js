@@ -438,6 +438,7 @@ async function deleteOrder(eventer) {
     if (res.ok) {
         orderList = await getOrders();
         paginationWorker(currentPage);
+        displayAlert("Заявка успешно удалена");
     } else {
         displayAlert(res.status, "error");
     }
