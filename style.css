@@ -10,9 +10,14 @@ nav {
     color: olive !important;
 }
 
-button {
+.btn {
     background-color: orange !important;
     border-color: orange !important;
+}
+
+.btn-secondary {
+    background-color: white !important;
+    color: orange !important;
 }
 
 .current-page-button {
@@ -47,8 +52,8 @@ button {
     color: white !important;
 }
 
-table {
-    border-radius: 5%;
+.disabled .page-link {
+    color: #212529 !important;
 }
 
 th {
