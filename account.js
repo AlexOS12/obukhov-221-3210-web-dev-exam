@@ -21,7 +21,7 @@ function displayAlert(message, status = "good") {
     // good - уведомление об успехе
     // attention - информационное сообщение
     // error - уведомление об ошибке
-    
+
     let messageDiv = document.createElement("div");
     messageDiv.classList.add("bg-opacity-75", "rounded", "text-center");
     let messageHeader = document.createElement("h5");
@@ -51,14 +51,19 @@ async function getOrders() {
     let res = await fetch(url);
     let orders = [];
 
-    if (res.ok) {
+    if (res.status == 200) {
         let json = await res.json();
         for (let order of json) {
             orders.push(order);
         }
         return orders;
     } else {
-        displayAlert(res.status, "error");
+        let json = await res.json();
+        let error = json.error;
+        if (error == undefined) {
+            error = "Произошла непредвиденная ошибка";
+        }
+        displayAlert(json.error, "error");
     }
 };
 
@@ -67,11 +72,16 @@ async function getRoute(routeId) {
     let url = genURL(`routes/${routeId}`);
     let res = await fetch(url);
 
-    if (res.ok) {
+    if (res.status == 200) {
         let route = await res.json();
         return route;
     } else {
-        displayAlert(res.status, "error");
+        let json = await res.json();
+        let error = json.error;
+        if (error == undefined) {
+            error = "Произошла непредвиденная ошибка";
+        }
+        displayAlert(json.error, "error");
     }
 };
 
@@ -80,11 +90,16 @@ async function getGuide(guideId) {
     let url = genURL(`guides/${guideId}`);
     let res = await fetch(url);
 
-    if (res.ok) {
+    if (res.status == 200) {
         let guide = await res.json();
         return guide;
     } else {
-        displayAlert(res.status, "error");
+        let json = await res.json();
+        let error = json.error;
+        if (error == undefined) {
+            error = "Произошла непредвиденная ошибка";
+        }
+        displayAlert(json.error, "error");
     }
 };
 
@@ -116,14 +131,19 @@ async function editExcursion() {
         form.append("price", price);
         form.append("optionFirst", Number(quickGuide));
         form.append("optionSecond", Number(sli));
-        let response = await fetch(url, {
+        let res = await fetch(url, {
             method: "PUT",
             body: form
         });
-        if (response.ok) {
+        if (res.status == 200) {
             displayAlert("Заявка успешно изменена");
         } else {
-            displayAlert(response.status, "error");
+            let json = await res.json();
+            let error = json.error;
+            if (error == undefined) {
+                error = "Произошла непредвиденная ошибка";
+            }
+            displayAlert(json.error, "error");
         }
     } else {
         displayAlert("Не все поля заполнены", "attention");
@@ -136,10 +156,14 @@ async function fillViewForm(orderId) {
     let url = genURL(`orders/${orderId}`);
     let res = await fetch(url);
 
-    if (!res.ok) {
-        displayAlert(res.status, "error");
-        return;
-    } 
+    if (res.status != 200) {
+        let json = await res.json();
+        let error = json.error;
+        if (error == undefined) {
+            error = "Произошла непредвиденная ошибка";
+        }
+        displayAlert(json.error, "error");
+    }
     let order = await res.json();
 
     let label = document.getElementById("viewLabel");
@@ -289,9 +313,13 @@ async function fillEditForm(orderId) {
     let url = genURL(`orders/${orderId}`);
     let res = await fetch(url);
 
-    if (!res.ok) {
-        displayAlert(res.status, "error");
-        return;
+    if (res.status != 200) {
+        let json = await res.json();
+        let error = json.error;
+        if (error == undefined) {
+            error = "Произошла непредвиденная ошибка";
+        }
+        displayAlert(json.error, "error");
     }
     let order = await res.json();
 
@@ -439,12 +467,17 @@ async function deleteOrder(eventer) {
     let res = await fetch(url, {
         method: "DELETE"
     });
-    if (res.ok) {
+    if (res.status == 200) {
         orderList = await getOrders();
         paginationWorker(currentPage);
         displayAlert("Заявка успешно удалена");
     } else {
-        displayAlert(res.status, "error");
+        let json = await res.json();
+        let error = json.error;
+        if (error == undefined) {
+            error = "Произошла непредвиденная ошибка";
+        }
+        displayAlert(json.error, "error");
     }
 }
 

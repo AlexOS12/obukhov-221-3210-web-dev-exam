@@ -56,7 +56,7 @@ async function getGuides() {
     let res = await fetch(url);
     let langSelect = document.getElementById("langSelect");
 
-    if (res.ok) {
+    if (res.status == 200) {
         let json = await res.json();
         for (let guide of json) {
             guides.push(guide);
@@ -79,7 +79,12 @@ async function getGuides() {
         }
         return guides;
     } else {
-        displayAlert(res.status, "error");
+        let json = await res.json();
+        let error = json.error;
+        if (error == undefined) {
+            error = "Произошла непредвиденная ошибка";
+        }
+        displayAlert(json.error, "error");
     }
 
 }
@@ -390,15 +395,19 @@ async function getRoutes() {
     let res = await fetch(url);
     let routes = [];
 
-    if (res.ok) {
+    if (res.status == 200) {
         let json = await res.json();
         for (let route of json) {
-
             routes.push(route);
         }
         return routes;
     } else {
-        displayAlert(res.status, "error");
+        let json = await res.json();
+        let error = json.error;
+        if (error == undefined) {
+            error = "Произошла непредвиденная ошибка";
+        }
+        displayAlert(json.error, "error");
     }
 };
 
@@ -532,14 +541,19 @@ async function orderExcursion() {
         form.append("price", price);
         form.append("optionFirst", Number(quickGuide));
         form.append("optionSecond", Number(sli));
-        let response = await fetch(url, {
+        let res = await fetch(url, {
             method: "POST",
             body: form
         });
-        if (response.ok) {
+        if (res.status == 200) {
             displayAlert("Экскурсия успешно заказана");
         } else {
-            displayAlert(response.status);
+            let json = await res.json();
+            let error = json.error;
+            if (error == undefined) {
+                error = "Произошла непредвиденная ошибка";
+            }
+            displayAlert(json.error, "error");
         }
     } else {
         displayAlert("Не все поля заполнены", "attention");
