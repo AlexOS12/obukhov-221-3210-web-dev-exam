@@ -89,16 +89,23 @@ function displayGuides() {
     let guidesTable = document.getElementById("guides-table");
     let guidesSection = document.getElementById("guides-section");
     let expF = document.getElementById("expFrom").value;
-    if (expF == "" || expF < 0) {
+
+    if (expF == "") {
+        expF = 0;
+    } else if (expF < 0) {
         document.getElementById("expFrom").value = 0;
         expF = 0;
     }
+
     let expT = document.getElementById("expTo").value;
 
-    if (expT == "" || expT < expF) {
+    if (expT == "") {
+        expT = Infinity;
+    } else if (expT < expF) {
         document.getElementById("expTo").value = expF;
         expT = expF;
     }
+    
     guidesSection.classList.remove("hidden");
     guidesTable.innerHTML = "";
 
