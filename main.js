@@ -551,13 +551,6 @@ window.onload = async function () {
     document.getElementById("expFrom").oninput = displayGuides;
     document.getElementById("expTo").oninput = displayGuides;
 
-    document.querySelector(".first-page-btn").onclick = function () {
-        paginationWorker(1);
-    };
-    document.querySelector(".last-page-btn").onclick = function () {
-        paginationWorker(maxPage);
-    };
-
     let orderModal = document.getElementById("order-modal");
     orderModal.addEventListener("show.bs.modal", fillForm);
 };
