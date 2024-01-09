@@ -26,6 +26,16 @@ button {
     height: 3px;
 }
 
+.page-link {
+    color: orange !important;
+    border-color: orange !important;
+}
+
+.active .page-link {
+    background-color: orange !important;
+    color: white !important;
+}
+
 table {
     border-radius: 5%;
 }
