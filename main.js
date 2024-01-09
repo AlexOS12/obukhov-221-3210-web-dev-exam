@@ -89,7 +89,7 @@ function createPageButton(pageNum) {
 
 // Работа с пагинацией
 function paginationWorker(page) {
-    let maxPage = Math.ceil(routesList.length / 5);
+    let maxPage = Math.ceil(filteredRoutesList.length / 5);
     let pgBtns = document.getElementById("pageBtns");
     pgBtns.innerHTML = "";
 
