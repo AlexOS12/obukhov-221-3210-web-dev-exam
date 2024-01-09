@@ -590,4 +590,27 @@ window.onload = async function () {
 
     let orderModal = document.getElementById("order-modal");
     orderModal.addEventListener("show.bs.modal", fillForm);
+
+    // Функционал полей формы оформления заявки
+    document.getElementById("excDate").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excTime").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excDuration").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excPeople").oninput = () => {
+        checkOptions();
+    };
+    document.getElementById("quickGuide").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("sli").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("orderBtn").onclick = () => {
+        orderExcursion();
+    };
 };

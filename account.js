@@ -453,4 +453,30 @@ window.onload = async function () {
 
     orderList = await getOrders();
     paginationWorker(1);
+
+    // Функционал полей формы редактировния заявки
+    document.getElementById("excDate").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excTime").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excDuration").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excPeople").oninput = () => {
+        checkOptions();
+    };
+    document.getElementById("quickGuide").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("sli").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("editOrderBtn").onclick = () => {
+        editExcursion();
+    };
+    document.getElementById("delConfirm").onclick = () => {
+        deleteOrder(this);
+    };
 };
