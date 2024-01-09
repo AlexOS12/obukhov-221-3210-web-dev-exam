@@ -28,7 +28,68 @@ async function deleteOrder(eventer) {
 }
 
 // Заполнение формы просмотра
-async function fillForm(orderId) {
+async function fillViewForm(orderId) {
+    let url = genURL(`orders/${orderId}`);
+    let res = await fetch(url);
+
+    if (!res.ok) {
+        console.log(res.status);
+        return;
+    }
+    let order = await res.json();
+
+    let guideNameField = document.getElementById("guideNameView");
+    let guide = await getGuide(order.guide_id);
+    guideNameField.innerHTML = guide.name;
+
+    let routeNameField = document.getElementById("nameRouteView");
+    let route = await getRoute(order.route_id);
+    routeNameField.innerHTML = route.name;
+
+    let dateField = document.getElementById("excDateView");
+    dateField.innerHTML = order.date;
+
+    let timeField = document.getElementById("excTimeView");
+    timeField.innerHTML = order.time;
+
+    let durationField = document.getElementById("excDurationView");
+    if (order.duration == 1) {
+        durationField.innerHTML = "1 час";
+    } else {
+        durationField.innerHTML = `${order.duration} часа`;
+    }
+
+    let peopleField = document.getElementById("excPeopleView");
+    peopleField.innerHTML = order.persons;
+
+    let priceField = document.getElementById("totalPriceView");
+    priceField.innerHTML = order.price;
+
+    let quickGuide = document.getElementById("quickGuideView");
+    if (!order.optionFirst) {
+        quickGuide.classList.add("hidden");
+    } else {
+        quickGuide.classList.remove("hidden");
+    }
+
+    let quickGuideField = document.getElementById("quickGuidePriceView");
+    let quickGuidePrice = guide.pricePerHour * order.duration * 0.3;
+    quickGuideField.innerHTML = `${Math.floor(quickGuidePrice)} &#8381; (30%)`;
+
+    let sli = document.getElementById("sliDivView")
+    if (!order.optionSecond) {
+        sli.classList.add("hidden");
+    } else {
+        sli.classList.remove("hidden");
+    }
+    let sliField = document.getElementById("sliPriceView");
+    let sliPercent = order.persons > 10 ? 25 : 15;
+    let sliPrice = guide.pricePerHour * order.duration * (sliPercent / 100);
+    sliField.innerHTML = `${Math.floor(sliPrice)} &#8381; (${sliPercent}%)`;
+};
+
+// Заполнение формы редактирования
+async function fillEditForm(orderId) {
     let url = genURL(`orders/${orderId}`);
     let res = await fetch(url);
 
@@ -47,45 +108,25 @@ async function fillForm(orderId) {
     routeNameField.innerHTML = route.name;
 
     let dateField = document.getElementById("excDate");
-    dateField.innerHTML = order.date;
+    dateField.value = order.date;
 
     let timeField = document.getElementById("excTime");
-    timeField.innerHTML = order.time;
+    timeField.value = order.time;
 
-    let durationField = document.getElementById("excDuration");
-    if (order.duration == 1) {
-        durationField.innerHTML = "1 час";
-    } else {
-        durationField.innerHTML = `${order.duration} часа`;
-    }
+    let duratSelect = document.getElementById("excDuration");
+    duratSelect.selectedIndex = order.duration - 1;
 
     let peopleField = document.getElementById("excPeople");
-    peopleField.innerHTML = order.persons;
+    peopleField.value = order.persons;
 
     let priceField = document.getElementById("totalPrice");
     priceField.innerHTML = order.price;
 
     let quickGuide = document.getElementById("quickGuide");
-    if (!order.optionFirst) {
-        quickGuide.classList.add("hidden");
-    } else {
-        quickGuide.classList.remove("hidden");
-    }
+    quickGuide.checked = order.optionFirst;
 
-    let quickGuideField = document.getElementById("quickGuidePrice");
-    let quickGuidePrice = guide.pricePerHour * order.duration * 0.3;
-    quickGuideField.innerHTML = `${Math.floor(quickGuidePrice)} &#8381; (30%)`;
-
-    let sli = document.getElementById("sliDiv")
-    if (!order.optionSecond) {
-        sli.classList.add("hidden");
-    } else {
-        sli.classList.remove("hidden");
-    }
-    let sliField = document.getElementById("sliPrice");
-    let sliPercent = order.persons > 10 ? 25 : 15;
-    let sliPrice = guide.pricePerHour * order.duration * (sliPercent / 100);
-    sliField.innerHTML = `${Math.floor(sliPrice)} &#8381; (${sliPercent}%)`;
+    let sli = document.getElementById("sli");
+    sli.checked = order.optionSecond;
 };
 
 // Отображение списка заявок
@@ -117,17 +158,25 @@ async function displayOrders() {
 
         let btnCell = document.createElement("td");
         let viewBtn = document.createElement("i");
+
         viewBtn.classList.add("bi", "bi-eye");
         viewBtn.setAttribute("data-bs-toggle", "modal");
         viewBtn.setAttribute("data-bs-target", "#view-modal");
         viewBtn.onclick = function () {
-            fillForm(order.id);
+            fillViewForm(order.id);
         }
+
         let editBtn = document.createElement("i");
         editBtn.classList.add("bi", "bi-pencil");
+        editBtn.setAttribute("data-bs-toggle", "modal");
+        editBtn.setAttribute("data-bs-target", "#edit-modal");
+        editBtn.onclick = function () {
+            fillEditForm(order.id);
+        }
+
         let delBtn = document.createElement("i");
         delBtn.setAttribute("data-bs-toggle", "modal");
-        delBtn.setAttribute("data-bs-target", "#deleteModal");
+        delBtn.setAttribute("data-bs-target", "#delete-modal");
         delBtn.onclick = function () {
             let confButton = document.getElementById("delConfirm");
             confButton.setAttribute("orderId", order.id);

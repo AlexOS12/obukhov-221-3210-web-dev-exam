@@ -83,24 +83,15 @@
                 <div class="d-flex justify-content-center">
                     <nav aria-label="...">
                         <ul class="pagination" id="pageBtns">
-
+                            <!-- Заполняется скриптом -->
                         </ul>
                       </nav>
                 </div>
-                <!-- <nav aria-label="...">
-                    <ul class="pagination pagination-sm">
-                      <li class="page-item active" aria-current="page">
-                        <span class="page-link">1</span>
-                      </li>
-                      <li class="page-item"><a class="page-link" href="#">2</a></li>
-                      <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    </ul>
-                  </nav> -->
             </div>
         </section>
         <!-- Модальное окно подтверждения удаления -->
         <section>
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
+            <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -133,43 +124,43 @@
                         <div class="modal-body">
                             <div class="px-2 d-flex">
                                 <p class="me-1">ФИО гида: </p>
-                                <p class="fw-semibold" id="guideName"></p>
+                                <p class="fw-semibold" id="guideNameView"></p>
                             </div>
                             <div class="px-2 d-flex">
                                 <p class="me-1">Назвние маршрута:</p>
-                                <p class="fw-semibold" id="nameRoute"></p>
+                                <p class="fw-semibold" id="nameRouteView"></p>
                             </div>
                             <div>
                                 <div class="px-2 d-flex">
                                     <p class="me-1">Дата экскурсии:</p>
-                                    <p class="fw-semibold" id="excDate"></p>
+                                    <p class="fw-semibold" id="excDateView"></p>
                                 </div>
                                 <div class="px-2 d-flex">
                                     <p class="me-1">Время начала:</p>
-                                    <p class="fw-semibold" id="excTime"></p>
+                                    <p class="fw-semibold" id="excTimeView"></p>
                                 </div>
                                 <div class="px-2 d-flex">
                                     <p class="me-1">Длительность экскурсии:</p>
-                                    <p class="fw-semibold" id="excDuration"></p>
+                                    <p class="fw-semibold" id="excDurationView"></p>
                                 </div>
                                 <div class="px-2 d-flex">
                                     <p class="me-1">Количество человек:</p>
-                                    <p class="fw-semibold" id="excPeople"></p>
+                                    <p class="fw-semibold" id="excPeopleView"></p>
                                 </div>
                             </div>
                             <div>
                                 <h6 class="px-2 my-2">Дополнительные опции</h6>
-                                <div class="px-2" id="quickGuide">
+                                <div class="px-2" id="quickGuideView">
                                     <p class="fw-semibold mb-1">Быстрый выезд гида</p>
                                     <p class="mb-0">Гид приедет на место начало экскурсии в течении часа после заказа.
                                         Повышает
                                         стоимость на 30%</p>
                                     <div class="d-flex">
                                         <p class="me-1">Надбавка за услугу:</p>
-                                        <p id="quickGuidePrice"></p>
+                                        <p id="quickGuidePriceView"></p>
                                     </div>
                                 </div>
-                                <div class="px-2" id="sliDiv">
+                                <div class="px-2" id="sliDivView">
                                     <p class="fw-semibold mb-1">Сопровождение сурдопереводика</p>
                                     <p class="mb-0">Увеличивает стоимость на 15%, если в группе от 1 до 5 посетителей,
                                         если посетителей от 5 до 10 - на 25%</p>
@@ -178,13 +169,13 @@
                                     </p>
                                     <div class="d-flex">
                                         <p class="me-1">Надбавка за услугу:</p>
-                                        <p id="sliPrice"></p>
+                                        <p id="sliPriceView"></p>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex">
                                 <p class="ps-2 me-1">Итоговая стоимость: </p>
-                                <p class="fw-semibold" id="totalPrice"></p>
+                                <p class="fw-semibold" id="totalPriceView"></p>
                                 <p class="fw-semibold">&nbsp;&#8381;</p>
                             </div>
                         </div>
@@ -193,6 +184,81 @@
                         </div>
                     </div>
         </section>
+        <!-- Модальное окно редактирования заявки -->
+        <div class="modal modal-lg fade" id="edit-modal" tabindex="-1" aria-labelledby="label" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen-md-down">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="label">Оформление заказа</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="d-flex">
+                                <p class="me-1">ФИО гида: </p>
+                                <p class="fw-semibold" id="guideName"></p>
+                            </div>
+                            <div class="d-flex">
+                                <p class="me-1">Назвние маршрута:</p>
+                                <p class="fw-semibold" id="nameRoute"></p>
+                            </div>
+                            <div class="d-flex flex-wrap">
+                                <div class="px-2">
+                                    <p class="mb-1">Дата экскурсии:</p>
+                                    <input type="date" name="excDate" id="excDate" onchange="priceCalculator()" required>
+                                </div>
+                                <div>
+                                    <p class="mb-1">Время начала:</p>
+                                    <input type="time" name="excTime" id="excTime" onchange="priceCalculator()" required>
+                                </div>
+                                <div class="px-2">
+                                    <p class="mb-1">Длительность экскурсии:</p>
+                                    <select name="excDuration" id="excDuration" onchange="priceCalculator()" required>
+                                        <option value="1" selected>1 час</option>
+                                        <option value="2">2 часа</option>
+                                        <option value="3">3 часа</option>
+
+                                    </select>
+                                </div>
+                                <div class="px-2">
+                                    <p class="mb-1">Количество человек:</p>
+                                    <input type="number" name="excPeople" id="excPeople" value="1" min="1" max="20"
+                                        oninput="checkOptions()" required>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="my-2">Дополнительные опции</h6>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <input type="checkbox" name="quickGuide" id="quickGuide" onchange="priceCalculator()">
+                                        <label class="fw-semibold" for="quickGuide">Быстрый выезд гида</label>
+                                        <p class="pe-3">Гид приедет на место начало экскурсии в течении часа после заказа. Повышает стоимость на 30%</p>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <input type="checkbox" name="sli" id="sli" onchange="priceCalculator()">
+                                        <label class="fw-semibold" for="sli">Сопровождение сурдопереводчика</label>
+                                        <p class="mb-0">Увеличивает стоимость на 15%, если в группе от 1 до 5&nbsp;посетителей,
+                                            если посетителей от 5 до 10 - на 25.
+                                        </p>
+                                        <p class="text-danger">Данная опция недоступна при количестве посетителей больше 10</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <p class="me-1">Итоговая стоимость: </p>
+                                <p class="fw-semibold" id="totalPrice"></p>
+                                <p class="fw-semibold">&nbsp;&#8381;</p>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
+                        <button type="button" class="btn btn-primary" onclick="orderExcursion()">Оформить
+                            заказ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
