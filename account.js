@@ -6,6 +6,7 @@ let currentOrder; // Текущая заявка
 let currentGuide; // Гид текущей заявки
 let currentRoute; // Маршрут текущей заявки
 let currentPage = 1; // Текущая страница
+let messageBox; // Для уведомлений (alert)
 
 // Генерация URL
 function genURL(path) {
@@ -13,6 +14,36 @@ function genURL(path) {
     url.searchParams.set("api_key", api);
     return url;
 };
+
+// Отображение уведомлений
+function displayAlert(message, status="good") {
+    // Статусы:
+    // good - уведомление об успехе
+    // attention - информационное сообщение
+    // error - уведомление об ошибке
+    
+    let messageDiv = document.createElement("div");
+    messageDiv.classList.add("bg-opacity-75", "rounded", "text-center");
+    let messageHeader = document.createElement("h5");
+    if (status == "good") {
+        messageHeader.innerHTML = "Успех!";
+        messageDiv.classList.add("bg-success");
+    } else if (status == "attention") {
+        messageHeader.innerHTML = "Внимание!";
+        messageDiv.classList.add("bg-warning");
+    } else {
+        messageHeader.innerHTML = "Ошибка!";
+        messageDiv.classList.add("bg-danger");
+    }
+    let messageText = document.createElement("p");
+    messageText.innerHTML = message;
+    messageDiv.appendChild(messageHeader);
+    messageDiv.appendChild(messageText);
+
+    messageBox.appendChild(messageDiv);
+
+    setTimeout(() => messageDiv.remove(), 2000);
+}
 
 // Редактирование заявки на сервере
 async function editExcursion() {
@@ -32,7 +63,6 @@ async function editExcursion() {
         let modalInstance = bootstrap.Modal.getInstance(modal);
         modalInstance.hide();
         let url = genURL(`orders/${currentOrder.id}`);
-        console.log(url);
         let form = new FormData();
         form.append("guide_id", currentGuide.id);
         form.append("route_id", currentRoute.id);
@@ -43,13 +73,17 @@ async function editExcursion() {
         form.append("price", price);
         form.append("optionFirst", Number(quickGuide));
         form.append("optionSecond", Number(sli));
-        console.log(form);
         let response = await fetch(url, {
             method: "PUT",
             body: form
         });
+        if (response.ok) {
+            displayAlert("Заявка успешно изменена");
+        } else {
+            displayAlert(response.status, "error");
+        }
     } else {
-        console.log("Не все поля заполнены");
+        displayAlert("Не все поля заполнены", "attention");
     }
     orderList = await getOrders();
 }
@@ -66,7 +100,7 @@ async function deleteOrder(eventer) {
         orderList = await getOrders();
         paginationWorker(currentPage);
     } else {
-        alert(res.status);
+        displayAlert(res.status, "error");
     }
 }
 
@@ -76,9 +110,9 @@ async function fillViewForm(orderId) {
     let res = await fetch(url);
 
     if (!res.ok) {
-        console.log(res.status);
+        displayAlert(res.status, "error");
         return;
-    }
+    } 
     let order = await res.json();
 
     let label = document.getElementById("viewLabel");
@@ -225,7 +259,7 @@ async function fillEditForm(orderId) {
     let res = await fetch(url);
 
     if (!res.ok) {
-        console.log(res.status);
+        displayAlert(res.status, "error");
         return;
     }
     let order = await res.json();
@@ -379,7 +413,7 @@ async function getOrders() {
         }
         return orders;
     } else {
-        alert(res.status);
+        displayAlert(res.status, "error");
     }
 };
 
@@ -392,7 +426,7 @@ async function getRoute(routeId) {
         let route = await res.json();
         return route;
     } else {
-        alert(res.status);
+        displayAlert(res.status, "error");
     }
 };
 
@@ -405,7 +439,7 @@ async function getGuide(guideId) {
         let guide = await res.json();
         return guide;
     } else {
-        alert(res.status);
+        displayAlert(res.status, "error");
     }
 };
 
@@ -414,6 +448,9 @@ window.onload = async function () {
     homeBtn.onclick = function () {
         window.location.href = "index.html";
     };
+
+    messageBox = document.querySelector(".messageBox");
+
     orderList = await getOrders();
     paginationWorker(1);
 };

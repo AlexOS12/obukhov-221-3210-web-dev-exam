@@ -10,6 +10,7 @@ let currentGuide; // Выбранный гид
 let guidesList = []; // Гиды для выбранного маршрута
 let selectedLang = ""; // Выбранный язык гида
 let selectedObject = ""; // Выбранный объект
+let messageBox; // Для уведомлений (alert)
 
 // Генерация URL
 function genURL(path) {
@@ -17,6 +18,36 @@ function genURL(path) {
     url.searchParams.set("api_key", api);
     return url;
 };
+
+// Отображение уведомлений
+function displayAlert(message, status="good") {
+    // Статусы:
+    // good - уведомление об успехе
+    // attention - информационное сообщение
+    // error - уведомление об ошибке
+    
+    let messageDiv = document.createElement("div");
+    messageDiv.classList.add("bg-opacity-75", "rounded", "text-center");
+    let messageHeader = document.createElement("h5");
+    if (status == "good") {
+        messageHeader.innerHTML = "Успех!";
+        messageDiv.classList.add("bg-success");
+    } else if (status == "attention") {
+        messageHeader.innerHTML = "Внимание!";
+        messageDiv.classList.add("bg-warning");
+    } else {
+        messageHeader.innerHTML = "Ошибка!";
+        messageDiv.classList.add("bg-danger");
+    }
+    let messageText = document.createElement("p");
+    messageText.innerHTML = message;
+    messageDiv.appendChild(messageHeader);
+    messageDiv.appendChild(messageText);
+
+    messageBox.appendChild(messageDiv);
+
+    setTimeout(() => messageDiv.remove(), 2000);
+}
 
 // Фильтрует маршруты
 function filterRoutes() {
@@ -250,7 +281,7 @@ async function getRoutes() {
         }
         return routes;
     } else {
-        alert(res.status);
+        displayAlert(res.status, "error");
     }
 };
 
@@ -354,7 +385,7 @@ async function getGuides() {
         }
         return guides;
     } else {
-        console.log(res.status);
+        displayAlert(res.status, "error");
     }
 
 }
@@ -475,7 +506,6 @@ async function orderExcursion() {
         let modalInstance = bootstrap.Modal.getInstance(modal);
         modalInstance.hide();
         let url = genURL("orders");
-        console.log(url);
         let form = new FormData();
         form.append("guide_id", currentGuide);
         form.append("route_id", currentRoute);
@@ -486,14 +516,17 @@ async function orderExcursion() {
         form.append("price", price);
         form.append("optionFirst", Number(quickGuide));
         form.append("optionSecond", Number(sli));
-        console.log(form);
         let response = await fetch(url, {
             method: "POST",
             body: form
         });
-        console.log(response)
+        if (response.ok) {
+            displayAlert("Экскурсия успешно заказана");
+        } else {
+            displayAlert(response.status);
+        }
     } else {
-        console.log("Не все поля заполнены");
+        displayAlert("Не все поля заполнены", "attention");
     }
 }
 
@@ -521,6 +554,9 @@ window.onload = async function () {
     accountBtn.onclick = function () {
         window.location.href = "account.html";
     };
+
+    messageBox = document.querySelector(".messageBox");
+
     routesList = await getRoutes();
     filterRoutes();
     displayRoutes(currentPage);
