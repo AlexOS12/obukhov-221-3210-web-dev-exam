@@ -76,52 +76,26 @@
                         </tr>
                     </thead>
                     <tbody class="align-middle">
-                        <tr>
-                            <td>1</td>
-                            <td>Маршрут 1</td>
-                            <td>01.01.2024</td>
-                            <td>7500</td>
-                            <td>
-                                <i class="bi bi-eye"></i>
-                                <i class="bi bi-pencil"></i>
-                                <i class="bi bi-trash"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Маршрут 2</td>
-                            <td>02.01.2024</td>
-                            <td>8500</td>
-                            <td>
-                                <i class="bi bi-eye"></i>
-                                <i class="bi bi-pencil"></i>
-                                <i class="bi bi-trash"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Маршрут 3</td>
-                            <td>03.01.2024</td>
-                            <td>10500</td>
-                            <td>
-                                <i class="bi bi-eye"></i>
-                                <i class="bi bi-pencil"></i>
-                                <i class="bi bi-trash"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Маршрут 4</td>
-                            <td>04.01.2024</td>
-                            <td>2500</td>
-                            <td>
-                                <i class="bi bi-eye"></i>
-                                <i class="bi bi-pencil"></i>
-                                <i class="bi bi-trash"></i>
-                            </td>
-                        </tr>
+                        <!-- Заполняется скриптом -->
                     </tbody>
                 </table>
+                <!-- Пагинация таблицы заявок -->
+                <div class="d-flex justify-content-center">
+                    <nav aria-label="...">
+                        <ul class="pagination" id="pageBtns">
+
+                        </ul>
+                      </nav>
+                </div>
+                <!-- <nav aria-label="...">
+                    <ul class="pagination pagination-sm">
+                      <li class="page-item active" aria-current="page">
+                        <span class="page-link">1</span>
+                      </li>
+                      <li class="page-item"><a class="page-link" href="#">2</a></li>
+                      <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    </ul>
+                  </nav> -->
             </div>
         </section>
         <!-- Модальное окно подтверждения удаления -->
@@ -187,7 +161,8 @@
                                 <h6 class="px-2 my-2">Дополнительные опции</h6>
                                 <div class="px-2" id="quickGuide">
                                     <p class="fw-semibold mb-1">Быстрый выезд гида</p>
-                                    <p class="mb-0">Гид приедет на место начало экскурсии в течении часа после заказа. Повышает
+                                    <p class="mb-0">Гид приедет на место начало экскурсии в течении часа после заказа.
+                                        Повышает
                                         стоимость на 30%</p>
                                     <div class="d-flex">
                                         <p class="me-1">Надбавка за услугу:</p>
@@ -198,7 +173,8 @@
                                     <p class="fw-semibold mb-1">Сопровождение сурдопереводика</p>
                                     <p class="mb-0">Увеличивает стоимость на 15%, если в группе от 1 до 5 посетителей,
                                         если посетителей от 5 до 10 - на 25%</p>
-                                    <p class="text-danger mb-0">Данная опция недоступна при количестве посетителей больше 10
+                                    <p class="text-danger mb-0">Данная опция недоступна при количестве посетителей
+                                        больше 10
                                     </p>
                                     <div class="d-flex">
                                         <p class="me-1">Надбавка за услугу:</p>
