@@ -2,6 +2,7 @@ const server = "http://exam-2023-1-api.std-900.ist.mospolytech.ru";
 const api = "c6ee856e-5b24-4d60-966a-4ed70a6a1134";
 
 let orderList = []; // Список всех заявок
+let currentPage = 1; // Текущая страница
 
 // Генерация URL
 function genURL(path) {
@@ -20,7 +21,7 @@ async function deleteOrder(eventer) {
     })
     if (res.ok) {
         orderList = await getOrders();
-        displayOrders();
+        paginationWorker(currentPage);
     } else {
         alert(res.status);
     }
@@ -28,10 +29,9 @@ async function deleteOrder(eventer) {
 
 // Заполнение формы просмотра
 async function fillForm(orderId) {
-
     let url = genURL(`orders/${orderId}`);
     let res = await fetch(url);
-    
+
     if (!res.ok) {
         console.log(res.status);
         return;
@@ -45,7 +45,7 @@ async function fillForm(orderId) {
     let routeNameField = document.getElementById("nameRoute");
     let route = await getRoute(order.route_id);
     routeNameField.innerHTML = route.name;
-    
+
     let dateField = document.getElementById("excDate");
     dateField.innerHTML = order.date;
 
@@ -64,7 +64,7 @@ async function fillForm(orderId) {
 
     let priceField = document.getElementById("totalPrice");
     priceField.innerHTML = order.price;
-  
+
     let quickGuide = document.getElementById("quickGuide");
     if (!order.optionFirst) {
         quickGuide.classList.add("hidden");
@@ -75,7 +75,7 @@ async function fillForm(orderId) {
     let quickGuideField = document.getElementById("quickGuidePrice");
     let quickGuidePrice = guide.pricePerHour * order.duration * 0.3;
     quickGuideField.innerHTML = `${Math.floor(quickGuidePrice)} &#8381; (30%)`;
-    
+
     let sli = document.getElementById("sliDiv")
     if (!order.optionSecond) {
         sli.classList.add("hidden");
@@ -94,7 +94,12 @@ async function displayOrders() {
     let tbody = table.querySelector("tbody");
     tbody.innerHTML = "";
 
-    for (let order of orderList) {
+    let start = 5 * (currentPage - 1);
+    let end = Math.min(start + 5, orderList.length);
+
+    // for (let order of orderList) {
+    for (let i = start; i < end; i++) {
+        let order = orderList[i];
         let tr = document.createElement("tr");
         let id = order.id;
         let route = await getRoute(order.route_id);
@@ -141,6 +146,35 @@ async function displayOrders() {
 
         tbody.appendChild(tr);
     }
+}
+
+function paginationWorker(page) {
+    let maxPage = Math.ceil(orderList.length / 5);
+    let pgBtns = document.getElementById("pageBtns");
+    pgBtns.innerHTML = "";
+
+    currentPage = Math.min(page, maxPage);
+
+    for (let i = 1; i <= maxPage; i++) {
+        let pageItem = document.createElement("li");
+        pageItem.setAttribute("href", "#orders-table");
+        pageItem.classList.add("page-item");
+        if (i == currentPage) {
+            pageItem.classList.add("active");
+        } else {
+            pageItem.onclick = function () {
+                paginationWorker(i);
+            }
+        }
+        let pageLink = document.createElement("a");
+        pageLink.classList.add("page-link");
+        pageLink.setAttribute("href", "#orders-table");
+        pageLink.innerHTML = i;
+        pageItem.appendChild(pageLink);
+        pgBtns.appendChild(pageItem);
+    }
+
+    displayOrders();
 }
 
 // Получение списка заявок
@@ -192,5 +226,5 @@ window.onload = async function () {
         window.location.href = "index.html";
     };
     orderList = await getOrders();
-    displayOrders();
+    paginationWorker(1);
 };
