@@ -26,6 +26,17 @@ button {
     height: 3px;
 }
 
+.tagImage {
+    background-image: url("images/motoBG.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.tagText {
+    border-radius: 10%;
+    backdrop-filter: blur(20px);
+}
+
 .page-link {
     color: orange !important;
     border-color: orange !important;
