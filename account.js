@@ -289,7 +289,7 @@ async function displayOrders() {
         let btnCell = document.createElement("td");
         let viewBtn = document.createElement("i");
 
-        viewBtn.classList.add("bi", "bi-eye");
+        viewBtn.classList.add("bi", "bi-eye", "px-1");
         viewBtn.setAttribute("data-bs-toggle", "modal");
         viewBtn.setAttribute("data-bs-target", "#view-modal");
         viewBtn.onclick = function () {
@@ -297,7 +297,7 @@ async function displayOrders() {
         }
 
         let editBtn = document.createElement("i");
-        editBtn.classList.add("bi", "bi-pencil");
+        editBtn.classList.add("bi", "bi-pencil", "px-1");
         editBtn.setAttribute("data-bs-toggle", "modal");
         editBtn.setAttribute("data-bs-target", "#edit-modal");
         editBtn.onclick = async function () {
@@ -308,13 +308,13 @@ async function displayOrders() {
         }
 
         let delBtn = document.createElement("i");
+        delBtn.classList.add("bi", "bi-trash", "px-1");
         delBtn.setAttribute("data-bs-toggle", "modal");
         delBtn.setAttribute("data-bs-target", "#delete-modal");
         delBtn.onclick = function () {
             let confButton = document.getElementById("delConfirm");
             confButton.setAttribute("orderId", order.id);
         };
-        delBtn.classList.add("bi", "bi-trash");
 
         btnCell.appendChild(viewBtn);
         btnCell.appendChild(editBtn);
