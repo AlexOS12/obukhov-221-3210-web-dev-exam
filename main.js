@@ -136,7 +136,7 @@ function displayGuides() {
                     if (currentGuide && currentRoute) {
                         let orderSection;
                         orderSection = document.getElementById("order-section");
-                        orderSect.classList.remove("hidden");
+                        orderSection.classList.remove("hidden");
                         window.location.href = "#order-section";
                     }
                 };
