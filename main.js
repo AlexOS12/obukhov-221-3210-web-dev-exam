@@ -55,21 +55,77 @@ function createPageButton(pageNum) {
     };
     return btn;
 }
+
+// Работа с пагинацией
 function paginationWorker(page) {
-    page = Number(page);
-    currentPage = page;
-    displayRoutes(page);
+    let maxPage = Math.ceil(routesList.length / 5);
+    let pgBtns = document.getElementById("pageBtns");
+    pgBtns.innerHTML = "";
 
-    let firstPageBtn = document.querySelector(".first-page-btn");
-    let lastPageBtn = document.querySelector(".last-page-btn");
-    let pageBtns = document.querySelector(".page-btns");
-    pageBtns.innerHTML = "";
+    currentPage = Math.min(page, maxPage);
 
-    let start = Math.max(page - 3, 1);
-    let end = Math.min(page + 3, maxPage);
-    for (let i = start; i <= end; i++) {
-        pageBtns.appendChild(createPageButton(i));
+    let start = Math.max(currentPage - 2, 1);
+    let end = Math.min(maxPage, page + 2);
+
+    // создание кнопки перехода на 1-ю страницу
+    let firstPageBtn = document.createElement("li");
+    firstPageBtn.setAttribute("href", "#routes-table");
+    firstPageBtn.classList.add("page-item");
+    let firstPageLink = document.createElement("a");
+    firstPageLink.classList.add("page-link");
+    firstPageLink.setAttribute("href", "#routes-table")
+    firstPageLink.innerHTML = "&laquo;&laquo;";
+    firstPageBtn.appendChild(firstPageLink);
+    if (currentPage == 1) {
+        firstPageBtn.classList.add("disabled");
+    } else {
+        firstPageBtn.onclick = function () {
+            paginationWorker(1);
+        }
     }
+
+    // создание кнопки перехода на последнюю страницу
+    let lastPageBtn = document.createElement("li");
+    lastPageBtn.setAttribute("href", "#routes-table");
+    lastPageBtn.classList.add("page-item");
+    let lastPageLink = document.createElement("a");
+    lastPageLink.classList.add("page-link");
+    lastPageLink.setAttribute("href", "#routes-table")
+    lastPageLink.innerHTML = "&raquo;&raquo;";
+    lastPageBtn.appendChild(lastPageLink);
+    if (currentPage == maxPage) {
+        lastPageBtn.classList.add("disabled");
+    } else {
+        lastPageBtn.onclick = function () {
+            paginationWorker(maxPage);
+        }
+    }
+
+    pgBtns.appendChild(firstPageBtn);
+
+    // создание остальных кнопок страниц
+    for (let i = start; i <= end; i++) {
+        let pageItem = document.createElement("li");
+        pageItem.setAttribute("href", "#routes-table");
+        pageItem.classList.add("page-item");
+        if (i == currentPage) {
+            pageItem.classList.add("active");
+        } else {
+            pageItem.onclick = function () {
+                paginationWorker(i);
+            }
+        }
+        let pageLink = document.createElement("a");
+        pageLink.classList.add("page-link");
+        pageLink.setAttribute("href", "#routes-table");
+        pageLink.innerHTML = i;
+        pageItem.appendChild(pageLink);
+        pgBtns.appendChild(pageItem);
+    }
+
+    pgBtns.appendChild(lastPageBtn);
+
+    displayRoutes();
 };
 
 // Парсинг и вывод объектов в селектор

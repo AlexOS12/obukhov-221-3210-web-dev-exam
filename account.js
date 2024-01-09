@@ -81,6 +81,9 @@ async function fillViewForm(orderId) {
     }
     let order = await res.json();
 
+    let label = document.getElementById("viewLabel");
+    label.innerHTML = `Заявка № ${order.id}`;
+
     let guideNameField = document.getElementById("guideNameView");
     let guide = await getGuide(order.guide_id);
     guideNameField.innerHTML = guide.name;
@@ -226,6 +229,9 @@ async function fillEditForm(orderId) {
         return;
     }
     let order = await res.json();
+
+    let label = document.getElementById("editLabel");
+    label.innerHTML = `Редактирование заявки № ${order.id}`;
 
     let guideNameField = document.getElementById("guideName");
     let guide = await getGuide(order.guide_id);
