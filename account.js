@@ -16,7 +16,7 @@ function genURL(path) {
 };
 
 // Отображение уведомлений
-function displayAlert(message, status="good") {
+function displayAlert(message, status = "good") {
     // Статусы:
     // good - уведомление об успехе
     // attention - информационное сообщение
@@ -44,6 +44,49 @@ function displayAlert(message, status="good") {
 
     setTimeout(() => messageDiv.remove(), 2000);
 }
+
+// Получение списка заявок
+async function getOrders() {
+    let url = genURL("orders");
+    let res = await fetch(url);
+    let orders = [];
+
+    if (res.ok) {
+        let json = await res.json();
+        for (let order of json) {
+            orders.push(order);
+        }
+        return orders;
+    } else {
+        displayAlert(res.status, "error");
+    }
+};
+
+// Получение списка маршрутов
+async function getRoute(routeId) {
+    let url = genURL(`routes/${routeId}`);
+    let res = await fetch(url);
+
+    if (res.ok) {
+        let route = await res.json();
+        return route;
+    } else {
+        displayAlert(res.status, "error");
+    }
+};
+
+// Получение списка гидов
+async function getGuide(guideId) {
+    let url = genURL(`guides/${guideId}`);
+    let res = await fetch(url);
+
+    if (res.ok) {
+        let guide = await res.json();
+        return guide;
+    } else {
+        displayAlert(res.status, "error");
+    }
+};
 
 // Редактирование заявки на сервере
 async function editExcursion() {
@@ -86,22 +129,6 @@ async function editExcursion() {
         displayAlert("Не все поля заполнены", "attention");
     }
     orderList = await getOrders();
-}
-
-// Удаление заявки
-async function deleteOrder(eventer) {
-    let orderId = eventer.getAttribute("orderId");
-    let url = genURL(`orders/${orderId}`);
-
-    let res = await fetch(url, {
-        method: "DELETE"
-    })
-    if (res.ok) {
-        orderList = await getOrders();
-        paginationWorker(currentPage);
-    } else {
-        displayAlert(res.status, "error");
-    }
 }
 
 // Заполнение формы просмотра
@@ -156,7 +183,7 @@ async function fillViewForm(orderId) {
     let quickGuidePrice = guide.pricePerHour * order.duration * 0.3;
     quickGuideField.innerHTML = `${Math.floor(quickGuidePrice)} &#8381; (30%)`;
 
-    let sli = document.getElementById("sliDivView")
+    let sli = document.getElementById("sliDivView");
     if (!order.optionSecond) {
         sli.classList.add("hidden");
     } else {
@@ -219,7 +246,7 @@ async function priceCalculator(order) {
     if (isDayOff(date)) {
         priceIncrease += 0.5;
     }
-    price *= priceIncrease
+    price *= priceIncrease;
     // если много посетителей
     if (people > 4 && people <= 10) {
         price += 1000;
@@ -334,7 +361,7 @@ async function displayOrders() {
         viewBtn.setAttribute("data-bs-target", "#view-modal");
         viewBtn.onclick = function () {
             fillViewForm(order.id);
-        }
+        };
 
         let editBtn = document.createElement("i");
         editBtn.classList.add("bi", "bi-pencil", "px-1");
@@ -345,7 +372,7 @@ async function displayOrders() {
             currentRoute = await getRoute(order.route_id);
             currentGuide = await getGuide(order.guide_id);
             fillEditForm(order.id);
-        }
+        };
 
         let delBtn = document.createElement("i");
         delBtn.classList.add("bi", "bi-trash", "px-1");
@@ -387,7 +414,7 @@ function paginationWorker(page) {
         } else {
             pageItem.onclick = function () {
                 paginationWorker(i);
-            }
+            };
         }
         let pageLink = document.createElement("a");
         pageLink.classList.add("page-link");
@@ -400,48 +427,21 @@ function paginationWorker(page) {
     displayOrders();
 }
 
-// Получение списка заявок
-async function getOrders() {
-    let url = genURL("orders");
-    let res = await fetch(url);
-    let orders = [];
+// Удаление заявки
+async function deleteOrder(eventer) {
+    let orderId = eventer.getAttribute("orderId");
+    let url = genURL(`orders/${orderId}`);
 
+    let res = await fetch(url, {
+        method: "DELETE"
+    });
     if (res.ok) {
-        let json = await res.json();
-        for (let order of json) {
-            orders.push(order);
-        }
-        return orders;
+        orderList = await getOrders();
+        paginationWorker(currentPage);
     } else {
         displayAlert(res.status, "error");
     }
-};
-
-// Получение списка маршрутов
-async function getRoute(routeId) {
-    let url = genURL(`routes/${routeId}`);
-    let res = await fetch(url);
-
-    if (res.ok) {
-        let route = await res.json();
-        return route;
-    } else {
-        displayAlert(res.status, "error");
-    }
-};
-
-// Получение списка гидов
-async function getGuide(guideId) {
-    let url = genURL(`guides/${guideId}`);
-    let res = await fetch(url);
-
-    if (res.ok) {
-        let guide = await res.json();
-        return guide;
-    } else {
-        displayAlert(res.status, "error");
-    }
-};
+}
 
 window.onload = async function () {
     let homeBtn = document.getElementById("homeBtn");
@@ -453,4 +453,30 @@ window.onload = async function () {
 
     orderList = await getOrders();
     paginationWorker(1);
+
+    // Функционал полей формы редактировния заявки
+    document.getElementById("excDate").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excTime").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excDuration").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("excPeople").oninput = () => {
+        checkOptions();
+    };
+    document.getElementById("quickGuide").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("sli").onchange = () => {
+        priceCalculator();
+    };
+    document.getElementById("editOrderBtn").onclick = () => {
+        editExcursion();
+    };
+    document.getElementById("delConfirm").onclick = () => {
+        deleteOrder(this);
+    };
 };

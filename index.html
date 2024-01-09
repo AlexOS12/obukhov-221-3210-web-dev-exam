@@ -212,18 +212,15 @@
                                 <div class="d-flex flex-wrap">
                                     <div class="px-2">
                                         <p class="mb-1">Дата экскурсии:</p>
-                                        <input type="date" name="excDate" id="excDate" onchange="priceCalculator()"
-                                            required>
+                                        <input type="date" name="excDate" id="excDate" required>
                                     </div>
                                     <div>
                                         <p class="mb-1">Время начала:</p>
-                                        <input type="time" name="excTime" id="excTime" onchange="priceCalculator()"
-                                            required>
+                                        <input type="time" name="excTime" id="excTime" required>
                                     </div>
                                     <div class="px-2">
                                         <p class="mb-1">Длительность экскурсии:</p>
-                                        <select name="excDuration" id="excDuration" onchange="priceCalculator()"
-                                            required>
+                                        <select name="excDuration" id="excDuration" required>
                                             <option value="1" selected>1 час</option>
                                             <option value="2">2 часа</option>
                                             <option value="3">3 часа</option>
@@ -233,21 +230,20 @@
                                     <div class="px-2">
                                         <p class="mb-1">Количество человек:</p>
                                         <input type="number" name="excPeople" id="excPeople" value="1" min="1" max="20"
-                                            oninput="checkOptions()" required>
+                                            required>
                                     </div>
                                 </div>
                                 <div>
                                     <h6 class="my-2">Дополнительные опции</h6>
                                     <div class="row">
                                         <div class="col-12 col-md-6">
-                                            <input type="checkbox" name="quickGuide" id="quickGuide"
-                                                onchange="priceCalculator()">
+                                            <input type="checkbox" name="quickGuide" id="quickGuide">
                                             <label class="fw-semibold" for="quickGuide">Быстрый выезд гида</label>
                                             <p class="pe-3">Гид приедет на место начало экскурсии в течении часа после
                                                 заказа. Повышает стоимость на 30%</p>
                                         </div>
                                         <div class="col-12 col-md-6">
-                                            <input type="checkbox" name="sli" id="sli" onchange="priceCalculator()">
+                                            <input type="checkbox" name="sli" id="sli">
                                             <label class="fw-semibold" for="sli">Сопровождение сурдопереводчика</label>
                                             <p class="mb-0">Увеличивает стоимость на 15%, если в группе от 1 до
                                                 5&nbsp;посетителей,
@@ -267,12 +263,11 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
-                            <button type="button" class="btn btn-primary" onclick="orderExcursion()">Оформить
+                            <button type="button" class="btn btn-primary" id="orderBtn">Оформить
                                 заказ</button>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </section>
     </main>
