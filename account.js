@@ -367,7 +367,6 @@ async function displayOrders() {
     let start = 5 * (currentPage - 1);
     let end = Math.min(start + 5, orderList.length);
 
-    // for (let order of orderList) {
     for (let i = start; i < end; i++) {
         let order = orderList[i];
         let tr = document.createElement("tr");
@@ -487,6 +486,7 @@ window.onload = async function () {
         window.location.href = "index.html";
     };
 
+    // Блок под уведомления (alert)
     messageBox = document.querySelector(".messageBox");
 
     orderList = await getOrders();
@@ -514,6 +514,8 @@ window.onload = async function () {
     document.getElementById("editOrderBtn").onclick = () => {
         editExcursion();
     };
+
+    // Функционал кнопки подтверждения удаления заявки
     let delBtn = document.getElementById("delConfirm");
     delBtn.onclick = () => {
         deleteOrder(delBtn);

@@ -49,6 +49,7 @@ function displayAlert(message, status = "good") {
     setTimeout(() => messageDiv.remove(), 2000);
 }
 
+// Получение списка гидов
 async function getGuides() {
     let url = genURL(`routes/${currentRoute}/guides`);
     let guides = [];
@@ -89,6 +90,7 @@ async function getGuides() {
 
 }
 
+// Отображение доступных гидов по выбранному маршруту
 function displayGuides() {
     // expF и expT - опыт гида от и до соотвественно
     let guidesTable = document.getElementById("guides-table");
@@ -135,6 +137,8 @@ function displayGuides() {
                 expCell.innerHTML = guide.workExperience;
                 let priceCell = document.createElement("td");
                 priceCell.innerHTML = guide.pricePerHour;
+
+                // Создание кнопки выбора гида
                 let btnCell = document.createElement("td");
                 let button = document.createElement("button");
                 button.classList.add("btn", "btn-primary", "px-2");
@@ -211,6 +215,7 @@ function displayRoutes() {
 
         objCell.innerHTML = objects;
 
+        // Создание кнопки выбора маршрута
         let btnCell = document.createElement("td");
         let button = document.createElement("button");
         button.classList.add("btn", "btn-primary", "px-2");
@@ -318,7 +323,7 @@ function paginationWorker(page) {
     displayRoutes();
 };
 
-// Фильтрует маршруты
+// Фильтрация маршрутов 
 function filterRoutes() {
     filteredRoutesList = [];
     // Имя маршрута для фильрации
@@ -338,22 +343,6 @@ function filterRoutes() {
         maxPage = Math.floor(maxPage) + 1;
     }
     paginationWorker(1);
-}
-
-function createPageButton(pageNum) {
-    let btn = document.createElement("button");
-    btn.setAttribute("type", "button");
-    btn.classList.add("btn", "btn-primary", "px-2", "mx-1");
-
-    if (pageNum == currentPage) {
-        btn.classList.add("current-page-button");
-    }
-
-    btn.innerHTML = pageNum;
-    btn.onclick = function () {
-        paginationWorker(btn.innerHTML);
-    };
-    return btn;
 }
 
 // Парсинг и вывод объектов в селектор
@@ -411,6 +400,8 @@ async function getRoutes() {
     }
 };
 
+
+// Проверка, является ли день выходным
 function isDayOff(date) {
     let day = new Date(date);
     if (day.getDay() == 6 || day.getDay() == 7) {
@@ -429,6 +420,7 @@ function isDayOff(date) {
     return false;
 }
 
+// Расчёт стоимости заявки
 function priceCalculator() {
     let quickGuide = document.getElementById("quickGuide").checked;
     let sli = document.getElementById("sli").checked;
@@ -484,6 +476,7 @@ function priceCalculator() {
     priceDisplay.innerHTML = Math.round(price);
 }
 
+// Проверка допустимости доп опции 2 (сурдопереводчика)
 function checkOptions() {
     let sliCheck = document.getElementById("sli");
     let people = document.getElementById("excPeople").value;
@@ -501,6 +494,7 @@ function checkOptions() {
     priceCalculator();
 }
 
+// Сбор данных с формы и отправка заявки на сервер
 async function orderExcursion() {
     let curGuide; // гид экскурсии
     for (let guide of guidesList) {
@@ -560,6 +554,7 @@ async function orderExcursion() {
     }
 }
 
+// Заполнение формы оформления заявки (гид и маршрут)
 function fillForm(event) {
     let curGuide; // гид экскурсии
     for (let guide of guidesList) {
@@ -585,6 +580,7 @@ window.onload = async function () {
         window.location.href = "account.html";
     };
 
+    // Блок под уведомления (alert)
     messageBox = document.querySelector(".messageBox");
 
     routesList = await getRoutes();
